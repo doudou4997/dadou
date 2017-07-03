@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/aop/spring-tx.xsd">
+    <mvc:annotation-driven/>
+    <mvc:default-servlet-handler/>
+    <!-- 定义拦截器链-->
+    <mvc:interceptors>
+     <mvc:interceptor>
+         <mvc:mapping path="/op/**"/>
+         <!-- 权限拦截器 默认拦截所有请求 -->
+         <bean class="com.dadou.core.web.interceptor.OperatorHandlerInterceptor">
+         <!-- 验证失败返回的路径 -->
+         <property name="loginUrl" value="/op/login/toLogin"/>
+         <!-- 校验规则 -->
+         <property name="rules">
+           <list>
+              <!-- 操作工界面匹配 -->
+              <value>.*/op/.*</value>
+            </list>
+          </property>
+       </bean>
+      </mvc:interceptor>  
+      <mvc:interceptor>
+         <mvc:mapping path="/**"/>
+         <!-- 静态资源不做拦截 -->
+         <mvc:exclude-mapping path="/styles/**"/>
+         <mvc:exclude-mapping path="/op/**"/>
+         <mvc:exclude-mapping path="/qc/**"/>
+         <!-- 权限拦截器 默认拦截所有请求 -->
+         <bean class="com.dadou.core.web.interceptor.LoginHandlerInterceptor">
+         <!-- 验证失败返回的路径 -->
+         <property name="loginUrl" value="/comm/reLogin.jsp"/>
+         <!-- 验证失败返回的路径 -->
+         <property name="authUrl" value="/comm/auth.jsp"/>
+         <!-- operate 如果为true说明启用操作权限 false不启用操作权限 -->
+         <property name="operate" value="false"/>
+         <!-- 校验规则 -->
+         <property name="rules">
+           <list>
+              <!--后台登录规则  -->
+              <value>.*/login/((loginAjax)|(logout)|(toLogin)|(login)).*</value>
+              <!-- 接口规则 -->
+              <value>.*/api/((erp)|(plm)|(wms))/.*</value>
+            </list>
+          </property>
+       </bean>
+      </mvc:interceptor> 
+    </mvc:interceptors> 
+    <!-- 注解-->
+    <context:component-scan base-package="com.dadou">
+      <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
+    <bean  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+       <property name="prefix" value="/"/>
+       <property name="suffix" value=".jsp"/>
+    </bean>
+    
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">   
+          <property name="maxUploadSize"><value>1000000</value></property> 
+          <property name="defaultEncoding"><value>UTF-8</value></property> 
+    </bean> 
+    
+</beans>

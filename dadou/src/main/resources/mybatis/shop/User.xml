@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.dadou.shop.user.dao.UserDao">
+    <!--终端用户实体  -->
+    <resultMap type="com.dadou.shop.user.pojos.User" id="userMap" >
+       <id property="id" column="id" />
+       <result property="openId" column="openId" />
+       <result property="username" column="username" />
+       <result property="phone" column="phone" />
+       <result property="gender" column="gender" />
+       <result property="area" column="area" />
+       <result property="followtime" column="followtime"/>
+        <result property="flag" column="flag"/>
+        <result property="point" column="point"/>
+        <result property="deleteflag" column="deleteflag"/>
+    </resultMap>
+    <sql id="base_columns">
+        dt.id,dt.openId,dt.username,dt.phone,dt.gender,dt.area,dt.followtime,dt.flag,dt.point,dt.deleteflag
+    </sql>
+
+    <sql id="order_sql">
+        <if test="order!=null and sort!=null">
+            order by ${sort} ${order}
+        </if>
+    </sql>
+    <!-- 动态查询语句的动态条件 -->
+    <sql id="dynamic_conditions">
+        <where>
+            dt.deleteflag='0'
+            <if test="username!=null and username !=''">
+                and dt.username like #{username}
+            </if>
+        </where>
+    </sql>
+    <select id="findAll" resultMap="userMap">
+        select dt.* from dt_user dt
+    </select>
+    <select id="count" resultType="java.lang.String">
+        select count(*) from dt_user dt
+        <include refid="dynamic_conditions"/>
+    </select>
+
+    <select id="findByPage" resultMap="userMap">
+        select <include refid="base_columns"/>
+        from dt_user dt
+        <include refid="dynamic_conditions"/>
+        <include refid="order_sql"/>
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.dadou.shop.user.pojos.User">
+        insert into dt_user(dt.openId,dt.username,dt.phone,dt.gender,dt.area,dt.followtime)
+        values(#{openId},#{username},#{phone}, #{gender},#{area},#{followtime})
+    </insert>
+</mapper>

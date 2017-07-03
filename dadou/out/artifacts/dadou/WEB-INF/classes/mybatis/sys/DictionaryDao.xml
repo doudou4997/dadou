@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dadou.sys.dic.dao.DictionaryDao">
+	<resultMap type="com.dadou.sys.dic.pojos.Dictionary" id="dictionaryMap">
+		<id property="id" column="ID" />
+		<result property="value" column="DVALUE" />
+		<result property="key" column="DKEY" />
+		<result property="type" column="DTYPE" />
+		<result property="typeName" column="DTYPE_NAME" />
+	</resultMap>
+	<sql id="dynamic_conditions">
+        <where>
+            <if test="DtypeName!=null and DtypeName!=''">
+                <!-- TYPE_NAME like concat(concat('%', #{typeName}),'%') -->
+                and DTYPE_NAME like '%'||#{typeName}||'%'
+            </if>
+        </where>
+    </sql>
+    
+    <!-- 新增 -->
+    <insert id="save">
+    	insert into SYS_DICTIONARY (DVALUE,DKEY,DTYPE,DTYPE_NAME)
+    	values(#{value},#{key},#{type},#{typeName})
+    </insert>
+	<!-- 通过id删除数据字典 -->
+	<delete id="removeById">
+		delete from SYS_DICTIONARY where id=#{id}
+	</delete>
+	<!-- 查询所有数据 -->
+	<select id="findAll" resultMap="dictionaryMap">
+		select * from SYS_DICTIONARY S ORDER BY S.DTYPE,S.DKEY
+	</select>
+	<!-- 通过id查找 -->
+	<select id="findById" parameterType="java.lang.String" resultMap="dictionaryMap">
+		select * from SYS_DICTIONARY where ID=#{id}
+	</select>
+	<!-- 修改 -->
+	<update id="update">
+		update SYS_DICTIONARY S set
+		S.DVALUE=#{value},S.DKEY=#{key},S.DTYPE=#{type},
+		S.DTYPE_NAME=#{typeName} where S.ID=#{id}
+	</update>
+	
+	<!-- 查找所有的typeName去重 -->
+	<select id="findGroupByTypeName" resultMap="dictionaryMap">
+		select distinct DTYPE_NAME,DTYPE from SYS_DICTIONARY
+		<include refid="dynamic_conditions" />
+		<!-- group by type_name -->
+	</select>
+	
+	<!-- 通过typeName查找子节点 -->
+	<select id="findByTypeName" resultMap="dictionaryMap" parameterType="java.lang.String">
+		select * from SYS_DICTIONARY where DTYPE_NAME=#{typeName}
+	</select>
+	
+	<!-- 通过实际值和值类型查找 wangs -->
+	<select id="findByKeyAndType" resultMap="dictionaryMap">
+		select * from SYS_DICTIONARY  S WHERE S.DTYPE=#{type} and S.DKEY=#{key}
+	</select>
+	
+	<!-- 查找值类型是工厂相关的数据，用于工厂技能管理工厂下拉框使用  wangs -->
+	<select id="findByType" parameterType="java.lang.String" resultMap="dictionaryMap">
+		select * from SYS_DICTIONARY where DTYPE=#{type}
+	</select>
+	
+</mapper>

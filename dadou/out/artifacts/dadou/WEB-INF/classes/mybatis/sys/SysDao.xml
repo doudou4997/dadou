@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.dadou.sys.sys.dao.SysDao">
+    <!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 
+     <cache type="org.mybatis.caches.ehcache.EhcacheCache">
+        <property name="timeToIdleSeconds" value="12000"/>
+        <property name="timeToLiveSeconds" value="12000"/>
+        <property name="maxEntriesLocalHeap" value="100000"/>
+        <property name="maxEntriesLocalDisk" value="1000"/>
+        <property name="memoryStoreEvictionPolicy" value="LRU"/>
+     </cache>-->
+     <!--
+     <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> 
+     -->
+    <resultMap type="com.dadou.sys.sys.pojos.Sys" id="sysMap">
+       <id property="id" column="ID" />
+       <result property="name" column="SYS_NAME" />
+       <result property="orderNum" column="ORDER_NUM" />
+    </resultMap>
+    <sql id="base_columns">
+         ID,SYS_NAME,ORDER_NUM
+    </sql>
+    <!-- 根据 id查找菜单信息-->
+    <select id="findById" parameterType="java.lang.String" resultMap="sysMap" useCache="false">
+    	select <include refid="base_columns"/> 
+    	from sys_sub s where s.id = #{id}
+    </select>
+    <select id="findAll"  resultMap="sysMap" useCache="true">
+    	select s.* from sys_sub s order by s.ORDER_NUM
+    </select>
+     <!-- 权限分配-查询相关菜单 -->
+    <select id="findAllByIds"  resultMap="sysMap" >
+    	select s.* from sys_sub s
+    	<where>
+	    	<if test="params!=null">
+	    		 s.id in 
+	    		<foreach item="item" index="index" collection="params" open="(" separator="," close=")">
+                 #{item}
+             	</foreach>
+		    </if>
+	    </where>
+	    order by s.ORDER_NUM
+    </select>   
+</mapper>

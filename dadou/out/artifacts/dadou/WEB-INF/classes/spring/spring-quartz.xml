@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd" >
+     
+     
+     <!-- 配置线程池 -->
+	<bean id="taskExecutor"
+         class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="5" />
+        <property name="maxPoolSize" value="10" ></property>
+        <property name="queueCapacity" value="1500" />
+        <property name="keepAliveSeconds" value="60"/>
+    </bean>
+                           
+    <!-- 一下是有关定时器的一些配置 -->
+    <bean id="taskJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.goldwind.pr.service.SopFtpDownloadService"></bean>
+        </property>
+        <property name="targetMethod" value="findAndDownload"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    <!-- 没5分钟执行一次判断和抓取图片的逻辑 -->
+    <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="taskJob" />
+        <property name="cronExpression" value="0 0/5 * * * ?" />
+    </bean>
+
+    
+     <!-- QC 定时作业 -->
+     <bean id="qcDataTran" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.goldwind.qc.service.DataTranService"></bean>
+        </property>
+        <property name="targetMethod" value="doSendQcData"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    
+    <bean id="qcdataTranTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="qcDataTran" />
+        <property name="cronExpression" value="0 1/2 0 * * ?" />
+    </bean>
+    
+    <!-- END -->
+    <!-- 每隔24小时，在凌晨1点清除一下所有操作工登录的状态-->
+    <bean id="cleanLoginJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.goldwind.op.service.LoginService"></bean>
+        </property>
+        <property name="targetMethod" value="doCleanLogin"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    <bean id="cleanLoginTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="cleanLoginJob" />
+        <property name="cronExpression" value="0 0 1/23 * * ? *" />
+    </bean>
+    
+    <!-- 每隔24小时，在凌晨1点添加点检计划-->
+    <bean id="addTallyOrderOfDayinJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.goldwind.em.controller.TallyOrderController"></bean>
+        </property>
+        <property name="targetMethod" value="saveTallyOrderOfDay"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    <bean id="addTallyOrderOfDay" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="addTallyOrderOfDayinJob" />
+        <!--  <property name="cronExpression" value="0 0/1 10 * * ? *" />-->
+        <property name="cronExpression" value="0 0 1/23 * * ? *" />
+    </bean>
+    
+    <!-- 每周一，在凌晨1点添加点检计划-->
+    <bean id="addTallyOrderOfWeekinJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.goldwind.em.controller.TallyOrderController"></bean>
+        </property>
+        <property name="targetMethod" value="saveTallyOrderOfWeek"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    <bean id="addTallyOrderOfWeek" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="addTallyOrderOfWeekinJob" />
+        <!--  <property name="cronExpression" value="0 0/1 10 * * ? *" />-->
+        <property name="cronExpression" value="0 0 1 ? * MON" />
+    </bean>
+    
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="cronTrigger" />
+                <ref bean="qcdataTranTrigger" />
+                <ref bean="cleanLoginTrigger" />
+                <ref bean="addTallyOrderOfDay" />
+                <ref bean="addTallyOrderOfWeek" />
+            </list>
+        </property>
+        <property name="taskExecutor" ref="taskExecutor" /><!-- 引用上面的线程池 -->
+    </bean>
+    
+   
+    
+</beans>

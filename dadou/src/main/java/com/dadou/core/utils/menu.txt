@@ -1,0 +1,62 @@
+{
+    "button": [
+        {
+            "name": "海量视频", 
+            "sub_button": [
+                {
+                    "type": "click", 
+                    "name": "最新更新", 
+                    "key": "tsmenu_m_1"
+                }, 
+                {
+                    "type": "click", 
+                    "name": "热门影片", 
+                    "key": "tsmenu_m_2"
+                }, 
+                {
+                    "type": "click", 
+                    "name": "更多影片", 
+                    "key": "tsmenu_m_3"
+                }
+            ]
+        }, 
+        {
+            "name": "我的点播", 
+            "sub_button": [
+                {
+                    "type": "click", 
+                    "name": "点播记录", 
+                    "key": "tsmenu_p_1", 
+                    "sub_button": [ ]
+                }
+            ]
+        }, 
+        {
+            "name": "帮助信息", 
+            "sub_button": [
+                {
+                    "type": "click", 
+                    "name": "设备列表", 
+                    "key": "tsmenu_h_1", 
+                    "sub_button": [ ]
+                }, 
+                {
+                    "type": "click", 
+                    "name": "精彩应用", 
+                    "key": "tsmenu_h_2", 
+                    "sub_button": [ ]
+                }, 
+                {
+                    "type": "click", 
+                    "name": "遥控器","key": "tsmenu_h_3", 
+                    "sub_button": [ ]
+                }, 
+                {"type": "click", 
+                    "name": "帮助", 
+                    "key": "tsmenu_h_4", 
+                    "sub_button": [ ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+@charset "utf-8";
+/* CSS Document */
+body{margin:0 auto;}
+*{margin:0px; padding:0px; }
+.clear{clear:both;}
+a{color:#000;text-decoration:none;}
+a:hover{ color:#206ba4; text-decoration:none;}
+a.white{color:#fff;text-decoration:none;}
+a.white:hover{ color:#ff0; text-decoration:none;}
+ul li{ list-style:none;}
+.top{ background:url(../images/top/top_bg.jpg) repeat-x; height:55px;width:100%; min-width:1270px;overflow-x:auto;overflow-y:hidden;}
+.top_l{ background:url(../images/top/top_l.jpg) no-repeat; height:55px; min-width:850px; float:left; }
+.logo{ background:url(../images/top/logo.png) no-repeat;width:300px; height:50px; margin:5px 0px 0px 20px; float:left;}
+.right{float:right; width:420px;height:23px;padding-top:18px;}
+.menu_off{ background:url(../images/top/menu_off.png) no-repeat; width:96px; height:29px; color:#206ba4; text-align:center; }
+.menu_on{background:url(../images/top/menu_on.png) no-repeat; width:96px; height:29px; color:#fff; text-align:center;font-weight:bold;}
+.menu_top{ margin-top:23px;margin-left:60px;float:left;}
+.menu_top ul li{ float:left; font-size:13px;  padding-top:8px; margin-right:2px;}
+.button{ background:url(../images/top/button.png) no-repeat;width:76px; height:22px; line-height:22px;text-align:center; display:block; margin-left:10px;margin-top:5px; }

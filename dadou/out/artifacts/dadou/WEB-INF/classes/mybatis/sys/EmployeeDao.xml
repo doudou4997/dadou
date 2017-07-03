@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.dadou.sys.emp.dao.EmployeeDao">
+    <resultMap type="com.dadou.sys.emp.pojos.Employee" id="employeeMap">
+       <id property="id" column="id" />
+       <result property="name" column="name" />
+       <result property="jobName" column="jobname" />
+       <result property="userName" column="username" />
+       <result property="password" column="password" />
+       <result property="userCode" column="usercode" />
+       <result property="gender" column="gender"/>
+       <result property="freeze" column="freeze"/>
+       <result property="mobile" column="mobile"/>
+       <result property="email" column="email"/>
+       <result property="remark" column="remark"/>
+       <result property="deleteFlag" column="deleteflag"/>
+       <result property="lastLoginTime" column="last_login_time"/>
+       <result property="lastLoginIp" column="last_login_ip"/>
+       <result property="deptId" column="dept_id"/>
+       <!-- 临时字段 -->
+       <result property="deptName" column="deptName"/>
+    </resultMap>
+    <resultMap type="com.dadou.sys.emp.pojos.UserMenu" id="userMenuMap">
+       <id property="id" column="id" />
+       <result property="parentId" column="parent_id" />
+       <result property="menuId" column="menu_id" />
+       <result property="userId" column="user_id" />
+       <result property="name" column="name" />
+       <result property="url" column="url" />
+       <result property="title" column="title" />
+       <result property="target" column="target" />
+       <result property="icon" column="icon" />
+       <result property="iconOpen" column="iconopen"/>
+       <result property="sortNum" column="sortnum"/>
+    </resultMap>
+    <sql id="base_columns">
+         e.id,e.name,jobName,userName,password,userCode,gender,freeze,mobile,email,remark,e.deleteflag,last_login_time,last_login_ip,dept_id
+    </sql>
+    <select id="findByCodeOrUserName" parameterType="java.lang.String" resultMap="employeeMap">
+       select <include refid="base_columns"/>
+       from sys_employee e
+       where  (e.userCode = #{userCode} or e.userName = #{userCode} ) and deleteflag=0
+    </select>
+    <!-- 动态查询语句的动态条件 -->
+    <sql id="dynamic_conditions">
+       <where>
+       		e.deleteflag='0' 
+          <if test="userName!=null and userName !=''">
+            and e.userName like #{userName}
+          </if>
+          <if test="name!=null and name !=''">
+            and e.name like #{name}
+          </if>
+          <if test="deptName!=null and deptName!=''">
+            and e.deptName like #{deptName}
+          </if>
+          <if test="deptId!=null">
+            and e.dept_id = #{deptId}
+          </if>
+           <if test="userCode!=null">
+            and e.userCode = #{userCode}
+           </if>
+           
+       </where>
+    </sql>
+    <!-- 一般通用的查询 -->
+    <select id="findList" resultMap="employeeMap">
+        select e.* from sys_employee e
+        <include refid="dynamic_conditions"/>
+    </select>
+    <select id="findAll" resultMap="employeeMap">
+        select e.* from sys_employee e where e.deleteflag='0'
+    </select>
+    <sql id="order_sql">
+        <if test="order!=null and sort!=null">
+            order by ${sort} ${order}
+        </if>
+    </sql>
+    <select id="count" resultType="java.lang.String">
+    	select count(*) from sys_employee e
+    	<include refid="dynamic_conditions"/>
+    </select>  
+    <select id="findByPage" resultMap="employeeMap">
+        select <include refid="base_columns"/> ,d.DEPTNAME deptName 
+        from sys_employee e  
+        left join sys_department d on e.dept_id = d.id
+        <include refid="dynamic_conditions"/>
+        <include refid="order_sql"/>
+    </select>
+    <select id="findById" parameterType="java.lang.String" resultMap="employeeMap">
+       select <include refid="base_columns"/>
+       from sys_employee e
+       where e.id = #{id} and e.deleteflag='0' 
+    </select>
+    <!-- 查询员工关联的Menu -->
+    <select id="findUserMenus" parameterType="java.lang.String" resultMap="userMenuMap">
+       select um.* from sys_user_menu um where um.user_id = #{userId}
+    </select>
+    <!-- 动态更新 -->
+	<update id="update">
+		update sys_employee e
+		<trim prefix="set" suffixOverrides=",">
+		    <if test="jobName!=null">
+		        e.jobName = #{jobName},
+		    </if>
+		    <if test="userName!=null">
+		        e.userName = #{userName},
+		    </if>		
+		    <if test="name!=null">
+		        e.name = #{name},
+		    </if>
+		    <if test="userCode!=null">
+		        e.userCode = #{userCode},
+		    </if>
+		    <if test="gender!=null">
+		        e.gender = #{gender},
+		    </if>	
+		    <if test="mobile!=null">
+		        e.mobile = #{mobile},
+		    </if>	
+		    <if test="email!=null">
+		        e.email = #{email},
+		    </if>	
+		    <if test="remark!=null">
+		        e.remark = #{remark},
+		    </if>
+		    	
+		    <if test="deleteFlag!=null">
+		    <!-- 删除用户使用，0代表正常标记，1代表删除标记 -->
+		        e.deleteflag = #{deleteFlag},
+		    </if>
+		    			    	    
+			<if test="lastLoginIp!=null">
+				e.last_login_ip = #{lastLoginIp},
+			</if>
+			<if test="lastLoginTime!=null">
+				e.last_login_time = #{lastLoginTime},
+			</if>
+			<if test="freeze!=null">
+			    e.freeze = #{freeze},
+			</if>
+			<if test="password!=null">
+			    e.password = #{password},
+			</if>
+			<if test="deptId!=null">
+			   e.dept_id = #{deptId}
+			</if>
+		</trim>
+		<where>
+			e.id = #{id}
+		</where>
+	</update>
+	<insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.dadou.sys.emp.pojos.Employee">
+	  insert into sys_employee(name,userName,password,userCode,gender,freeze,mobile,email,remark,deleteflag)
+	  values(#{name,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},
+	  #{userCode,jdbcType=VARCHAR},#{gender,jdbcType=VARCHAR},#{freeze},#{mobile,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{remark},#{deleteFlag})
+	</insert>
+	<!-- 批量保存用户角色 -->
+	<insert id="batchSaveEmpRole" useGeneratedKeys="false" parameterType="java.util.List">
+        insert into  SYS_EMP_ROLE(emp_id,role_id)
+        select * from ( 
+	        <foreach collection="empRoles" item="item" index="index" separator="UNION ALL">
+	         select 
+                #{item.empId} as eId,
+                #{item.roleId} as rId
+	         from dual
+	         </foreach>
+	    ) sys_emp_temp
+    </insert>
+	<delete id="removeUserRoleOfEmp" >
+		delete from sys_emp_role  where emp_id = #{empId} and role_id = #{roleId}
+	</delete>
+	<delete id="removeRoleOfEmp">
+        delete from sys_emp_role  where emp_id = #{empId}
+	</delete>
+	<!-- 工厂权限 -->
+	<delete id="removeSiteOfEmp">
+        delete from sys_emp_site  where emp_id = #{empId}
+	</delete>
+	<delete id="removeUserMenuOfEmp">
+	   delete from sys_user_menu  where  userId = #{empId}
+	</delete>
+     <!-- 查询该角色已分配的员工-->
+    <select id="findEmpOfRole"  resultMap="employeeMap">
+	select e.* from sys_employee e LEFT JOIN sys_emp_role er ON e.id=er.emp_id
+	LEFT JOIN sys_role r on r.id = er.role_id
+	where r.id = #{roleId}
+	limit #{pageNo},#{pageSize}
+    </select>
+    <select id="findEmpOfRole_count" resultType="java.lang.String">
+    select count(*) from sys_employee e LEFT JOIN sys_emp_role er ON e.id=er.emp_id
+	LEFT JOIN sys_role r on r.id = er.role_id
+	where r.id = #{roleId} and e.deleteflag='0'
+    </select> 
+</mapper>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<context:component-scan base-package="com.dadou">
+		<context:exclude-filter type="annotation"
+								expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	<context:property-placeholder location="classpath*:properties/report.properties"/>
+	<!-- 阿里 druid数据库连接池 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+
+		 <!-- mysql-->
+		<property name="url"  value="jdbc:mysql://localhost:3306/dadou?useUnicode=true&amp;characterEncoding=UTF-8"/>
+		<property name="username" value="root"/>
+		<property name="password" value="123456"/>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="filters" value="stat"/>
+
+		
+		<!-- Oracle
+		<property name="url"  value="jdbc:oracle:thin:@121.42.28.12:1521:orcl"/>
+		<property name="username" value="meskf"/>
+		<property name="password" value="meskflzf"/>
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+		<property name="filters" value="stat"/>
+-->
+
+
+		<!-- 最大并发连接数 -->
+		<property name="maxActive" value="20"/>
+		<!-- 初始化连接数量 -->
+		<property name="initialSize" value="1"/>
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000"/>
+		<!-- 最小空闲连接数 -->
+		<property name="minIdle" value="10"/>
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000"/>
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000"/>
+		<!-- Oracle数据库 -->
+		<property name="validationQuery" value="SELECT 'x' FROM DUAL"/>
+		<property name="testWhileIdle" value="true"/>
+		<property name="testOnBorrow" value="false"/>
+		<property name="testOnReturn" value="false"/>
+		<property name="maxOpenPreparedStatements" value="20"/>
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true"/>
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800"/>
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true"/>
+	</bean>
+
+	<!-- 配置mybatis -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
+	</bean>
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory"/>
+	</bean>
+	<!--配置声明式事务-->
+	<!-- 声明式事务配置 ,统一使用xml管理-->
+	<!-- 事务 -->
+	<bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	<!-- 配置事务增强 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<!-- 事务属性定义 by gaof-->
+			<tx:method name="save*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="remove*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="find*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="do*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+		</tx:attributes>
+	</tx:advice>
+	<aop:aspectj-autoproxy proxy-target-class="true"/>
+	<!-- 应用事务增强 -->
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="allMethods" expression="execution(* com.dadou..*Service.*(..))"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="allMethods"/>
+	</aop:config>
+	<!-- 国际化配置，注意：messageSource名称不能更改-->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<!--多个资源文件的配置格式-->
+		<property name="basenames">
+			<list>
+				<!-- 基本的业务处理信息 -->
+				<value>com.goldwind.res.msg.exam</value>
+				<value>com.dh.res.msg.user</value>
+				<value>com.dh.res.msg.kcgs</value>
+			</list>
+		</property>
+	</bean>
+</beans>

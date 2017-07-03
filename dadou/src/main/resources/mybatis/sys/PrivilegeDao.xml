@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.dadou.sys.privilege.dao.PrivilegeDao">
+    <resultMap type="com.dadou.sys.privilege.pojos.Privilege" id="privilegeMap">
+       <id property="id" column="id" />
+       <result property="name" column="name" />
+       <result property="url" column="url" />
+       <result property="operate" column="operate" />
+       <result property="description" column="description_" />
+       <result property="parentId" column="parent_id" />
+       <result property="sysId" column="sys_id"/>
+       <result property="sortNum" column="sortnum"/>
+    </resultMap>
+    <!-- 关联角色权限列表 -->
+    <resultMap type="com.dadou.sys.role.pojos.RolePrivilege" id="RolePrivilegeMap">
+      <id property="id" column="id" />
+       <result property="name" column="name" />
+       <result property="url" column="url" />
+       <result property="operate" column="operate" />
+       <result property="privilegeId" column="privilege_id" />
+        <result property="roleId" column="role_id" />
+    </resultMap>
+    <!-- 用户菜单_关联 -->
+    <resultMap type="com.dadou.sys.emp.pojos.UserMenu" id="UserMenuMap">
+       <id property="id" column="id" />
+        <result property="parentId" column="parent_id" />
+        <result property="menuId" column="menu_id" />
+        <result property="userId" column="role_id" />
+        <result property="name" column="name" />
+        <result property="url" column="url" />
+        <result property="title" column="title" />
+        <result property="icon" column="icon" />
+        <result property="sortNum" column="sortnum"/>
+    </resultMap>
+    <sql id="base_columns">
+         id,name,url,operate,description_,parent_id,sortnum
+    </sql>
+    <!-- 根据 id查找菜单信息 -->
+    <select id="findById" parameterType="java.lang.String" resultMap="privilegeMap" useCache="false">
+    	select p.* from sys_privilege p where p.id = #{id}
+    </select>
+    <!-- 保存 -->
+    <insert id="save" parameterType="com.dadou.sys.privilege.pojos.Privilege" useGeneratedKeys="false" keyProperty="id">
+    	insert into sys_privilege (name,url,operate,description_,parent_id,sortnum,sys_id) values (#{name},#{url},#{operate,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR},#{parentId},#{sortNum},#{sysId,jdbcType=VARCHAR})
+    </insert>
+    <!-- 关联删除 -->
+    <delete id="removeById" parameterType="java.lang.String">
+       	 delete from sys_privilege where id = #{id}
+    </delete>
+     <!-- 删除RolePrivilege -->
+    <delete id="removeRolePrivilegeByPId" parameterType="java.lang.String">
+    	delete from sys_role_privilege where privilege_id = #{id}
+    </delete>
+      <!-- 权限分配-查询相关菜单 -->
+    <select id="findAll"  resultMap="privilegeMap">
+    	select p.* from sys_privilege p
+    	<where>
+	    	<if test="params!=null">
+	    		p.id in
+	    		<foreach collection="params" item="item" index="index" open="(" separator="," close=")">
+	    		#{item}
+	    		</foreach>
+		    </if>
+	    </where>
+    </select>
+    <!-- 动态更新 Roleprivilege-->
+	<update id="updateRolePrivilege">
+		update sys_role_privilege rp
+		<trim prefix="set" suffixOverrides=",">
+		    <if test="name!=null">
+		        rp.name = #{name},
+		    </if>		
+		    <if test="url!=null">
+		        rp.url = #{url},
+		    </if>
+		    <if test="operate!=null">
+		        rp.operate = #{operate},
+		    </if>
+		</trim>
+		<where>
+			rp.privilege_id = #{id}
+		</where>
+	</update>
+    
+    <!-- 动态更新 privilege-->
+	<update id="update">
+		update sys_privilege p
+		<trim prefix="set" suffixOverrides=",">
+		    <if test="name!=null">
+		        p.name = #{name},
+		    </if>		
+		    <if test="url!=null">
+		        p.url = #{url},
+		    </if>
+		    <if test="operate!=null">
+		        p.operate = #{operate},
+		    </if>
+		    <if test="description!=null">
+		        p.description_ = #{description},
+		    </if>
+		    <if test="sortNum!=null">
+		        p.sortNum = #{sortNum},
+		    </if>
+		</trim>
+		<where>
+			p.id = #{id}
+		</where>
+	</update>
+</mapper>

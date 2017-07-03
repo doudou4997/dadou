@@ -1,0 +1,20 @@
+@CHARSET "UTF-8";
+.txtStyle
+{
+	font-size:13px;
+	height:22px;
+	padding-left:6px;
+	padding-right:6px;
+}
+ 
+ .gvtable { 
+ 	border:1 solid #ccc;  
+ 	border-collapse:collapse;
+   } 
+   
+   .gvtable td{
+   	border: solid 1px #ccc; height: 22px; 
+   	padding-left:4px;
+   }
+   
+   

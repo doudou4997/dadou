@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.dadou.sys.role.dao.RoleDao">
+    <resultMap type="com.dadou.sys.role.pojos.Role" id="roleMap">
+       <id property="id" column="id" />
+       <result property="roleName" column="roleName" />
+       <result property="description" column="description" />
+       <result property="sysId" column="SYS_ID" />
+    </resultMap>
+    <!-- RoleMenu -->
+    <resultMap type="com.dadou.sys.role.pojos.RoleMenu" id="roleMenuMap">
+       <id property="id" column="id" />
+       <result property="parentId" column="parent_id" />
+       <result property="menuId" column="menu_id" />
+       <result property="roleId" column="role_id" />
+       <!-- 不真实存在 -->
+       <result property="menuName" column="menuName" />
+       <result property="url" column="url" />
+       <result property="icon" column="icon" />
+       <result property="sortNum" column="sortNum" />
+       <result property="level" column="level_" />
+       <result property="sysId" column="sys_id" />
+    </resultMap>
+    <!--RolePrivilege  -->
+    <resultMap type="com.dadou.sys.role.pojos.RolePrivilege" id="rolePrivilegeMap">
+       <id property="id" column="id" />
+       <result property="roleId" column="role_id" />
+       <result property="privilegeId" column="privilege_id" />
+       <!-- 数据库中没有，临时处理 -->
+       <result property="name" column="name" />
+       <result property="url" column="url" />
+       <result property="operate" column="operate" />
+    </resultMap>
+    <!-- 动态查询语句的动态条件 -->
+    <sql id="dynamic_conditions">
+       <where>
+          <if test="sysId!=null and sysId!=''">
+            r.sys_id = #{sysId}
+          </if>          
+          <if test="roleName!=null and roleName!=''">
+            and r.roleName like concat(concat('%', #{roleName}),'%')
+          </if>
+       </where>
+    </sql>
+    <!-- 分页动态条件 -->
+    <select id="findByPage" resultMap="roleMap">
+        select r.*  from sys_role r
+        <include refid="dynamic_conditions"/>
+    </select>
+    <select id="count" resultType="java.lang.Integer">
+    	select count(*) from sys_role r
+    	<include refid="dynamic_conditions"/>
+    </select>
+    <!-- 根据ID查询角色 -->
+     <select id="findById" parameterType="java.lang.String" resultMap="roleMap" useCache="false">
+    	select r.* from sys_role r where r.id = #{id}
+    </select>
+    <select id="findAll" resultMap="roleMap">
+        select r.* from sys_role r
+        <where>
+           <if test="sysId!=null and sysId!=''">
+             r.sys_id = #{sysId}
+           </if>           
+           <if test="ids != null">
+             and r.id in 
+              <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+                 #{item}
+             </foreach>
+           </if>
+        </where>
+    </select>
+    
+    <select id="findRolesOfEmp" parameterType="java.lang.String" resultMap="roleMap">
+       select r.* from sys_role r 
+       inner join sys_emp_role er on r.id = er.role_id
+       inner join sys_employee e  on er.emp_id = e.id
+       where e.id = #{id}
+    </select>
+    <select id="findRoleMenus" parameterType="java.lang.String" resultMap="roleMenuMap">
+        select rm.id,rm.parent_id,rm.menu_id, rm.role_id, m.name menuName, m.url,m.icon,m.sortNum, m.level_ 
+        from sys_role_menu rm 
+        inner join  sys_menu m
+        on rm.menu_id = m.id 
+        where  rm.role_id = #{id}
+    </select>
+    <!-- 用于左侧导航树 -->
+    <select id="findRoleMenusForLeftTree" parameterType="java.lang.String" resultMap="roleMenuMap">
+        select rm.id,rm.parent_id,rm.menu_id, rm.role_id, m.name menuName, m.url,m.icon,m.sortNum, m.level_,m.sys_id
+        from sys_role_menu rm 
+        inner join  sys_menu m
+        on rm.menu_id = m.id 
+        where m.istree = 1 and  rm.role_id in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="findRolePrivileges" parameterType="java.lang.String" resultMap="rolePrivilegeMap">
+      select rp.* from sys_role_privilege rp where rp.role_id = #{id}
+    </select>
+    <!-- 获取一组角色的权限 -->
+    <select id="findRolePrivilegesByIds" resultType="java.util.Map">
+      SELECT  DISTINCT * FROM (SELECT P.URL, R.ID
+          FROM sys_role_PRIVILEGE RP
+          LEFT JOIN sys_role R
+            ON RP.ROLE_ID = R.ID
+          LEFT JOIN SYS_PRIVILEGE P
+            ON P.ID = RP.PRIVILEGE_ID
+        UNION ALL
+        SELECT M.URL, R.ID
+          FROM sys_role_MENU RM
+          LEFT JOIN sys_role R
+            ON R.ID = RM.ROLE_ID
+          LEFT JOIN SYS_MENU M
+            ON M.ID = RM.MENU_ID) PI
+        WHERE PI.ID IN
+         <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+         </foreach>
+    </select>
+    <!-- 保存 -->
+    <insert id="save" parameterType="com.dadou.sys.role.pojos.Role" useGeneratedKeys="true" keyProperty="id">
+    	insert into sys_role (roleName,description,sys_id) values (#{roleName},#{description},#{sysId})
+    </insert>
+    <insert id="batchSaveRoleMenus" useGeneratedKeys="false" parameterType="java.util.List">
+        insert into  sys_role_menu (parent_id, menu_id, role_id)
+        select * from ( 
+	        <foreach collection="list" item="item" index="index" separator="UNION ALL">
+	         select 
+                #{item.parentId} as p_id,
+                #{item.menuId} as m_id,
+                #{item.roleId} as r_id
+	         from dual
+	         </foreach>
+	    ) role_menu_temp
+    </insert>
+    <insert id="batchSaveRolePrivileges" useGeneratedKeys="false" parameterType="java.util.List">
+        insert into sys_role_privilege (role_id, privilege_id)
+        select * from ( 
+	    <foreach collection="list" item="item" index="index" separator="UNION ALL">
+	      select 
+             #{item.roleId} as rId,
+             #{item.privilegeId} as pId
+	      from dual
+	    </foreach>
+	    ) role_privilege_temp
+    </insert>
+    <!-- 动态更新 role-->
+	<update id="update">
+		update sys_role r
+		<trim prefix="set" suffixOverrides=",">
+		    <if test="roleName!=null">
+		        r.rolename = #{roleName},
+		    </if>		
+		    <if test="description!=null">
+		        r.description = #{description},
+		    </if>
+		    <if test="sysId!=null">
+		        r.sys_id = #{sysId},
+		    </if>		    
+		</trim>
+		<where>
+			r.id = #{id}
+		</where>
+	</update>    
+    <!-- 关联删除 -->
+    <delete id="removeById" parameterType="java.lang.String">
+       	 delete from sys_role where id = #{roleId}
+    </delete>
+     <!-- 删除RolePrivilege -->
+    <delete id="removeRPByRoleId">
+    	delete from sys_role_privilege where role_id = #{roleId}
+    </delete>
+     <!-- 删除RoleMenu -->
+    <delete id="removeRmByRoleId">
+    	delete from sys_role_menu where role_id = #{roleId}
+    </delete>
+</mapper>

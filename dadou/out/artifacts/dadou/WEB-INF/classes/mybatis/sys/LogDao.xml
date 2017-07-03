@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.dadou.sys.log.dao.LogDao">
+    <resultMap type="com.dadou.sys.log.pojos.SysLog" id="logMap">
+       <id property="id" column="ID" />
+       <result property="operateDate" column="OPERATEDATE" />
+       <result property="ip" column="IP_" />
+       <result property="userName" column="USERNAME" />
+       <result property="event" column="EVENT_" />
+        <result property="type" column="TYPE_" />
+        <result property="moduleName" column="MODULENAME" />
+    </resultMap>
+    <sql id="base_columns">
+         ID,OPERATEDATE,IP_,USERNAME,EVENT_,TYPE_,MODULENAME
+    </sql>
+    <!-- 动态查询语句的动态条件 -->
+    <sql id="dynamic_conditions">
+       <where>
+          <if test="userName!=null and userName !=''">
+            l.USERNAME like #{userName}
+          </if>
+          <if test="beginDate!=null and endDate != null">
+            and <![CDATA[l.OPERATEDATE >= #{beginDate} and l.OPERATEDATE <= #{endDate}]]> 
+          </if>
+       </where>
+    </sql>
+    <sql id="order_sql">
+        <if test="order!=null and sort!=null">
+            order by ${sort} ${order}
+        </if>
+    </sql>
+    <select id="count" resultType="java.lang.Integer">
+    	select count(*) from sys_log l
+    	<include refid="dynamic_conditions"/>
+    </select>  
+    <select id="findByPage" resultMap="logMap">
+        select <include refid="base_columns"/> 
+        from  sys_log l
+        <include refid="dynamic_conditions"/>
+        <include refid="order_sql"/>
+    </select>
+	<insert id="save" useGeneratedKeys="false" keyProperty="id" parameterType="com.dadou.sys.log.pojos.SysLog">
+	  insert into SYS_LOG(OPERATEDATE,IP_,USERNAME,EVENT_,TYPE_,MODULENAME)
+	  values(#{operateDate},#{ip},#{userName},#{event},#{type},#{moduleName,jdbcType=VARCHAR})
+	</insert>
+</mapper>

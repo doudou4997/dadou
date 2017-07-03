@@ -1,0 +1,134 @@
+.icon-cog {
+	background:url('icons/cog.png') no-repeat center center;
+}
+.icon-group {
+	background:url('icons/group.png') no-repeat center center;
+}
+.icon-hammer {
+	background:url('icons/hammer.png') no-repeat center center;
+}
+.icon-hammer2 {
+	background:url('icons/hammer2.png') no-repeat center center;
+}
+.icon-database {
+	background:url('icons/database.png') no-repeat center center;
+}
+.icon-lightning {
+	background:url('icons/lightning.png') no-repeat center center;
+}
+.icon-organisation {
+	background:url('icons/organisation.png') no-repeat center center;
+}
+.icon-user {
+	background:url('icons/user.png') no-repeat center center;
+}
+.icon-door {
+	background:url('icons/door.png') no-repeat center center;
+}
+.icon-bookopen {
+	background:url('icons/book_open.png') no-repeat center center;
+}
+.icon-clipboardtext {
+	background:url('icons/clipboard_text.png') no-repeat center center;
+}
+.icon-tux {
+	background:url('icons/tux.png') no-repeat center center;
+}
+.icon-online {
+	background:url('icons/status_online.png') no-repeat center center;
+}
+.icon-plugin {
+	background:url('icons/plugin.png') no-repeat center center;
+}
+.icon-wrench {
+	background:url('icons/wrench.png') no-repeat center center;
+}
+.icon-light-off {
+	background:url('icons/lightbulb_off.png') no-repeat center center;
+}
+.icon-light {
+	background:url('icons/lightbulb.png') no-repeat center center;
+}
+.icon-flash{
+	background:url('icons/page_white_flash.png') no-repeat center center;
+}
+.icon-screen{
+	background:url('icons/projection_screen.png') no-repeat center center;
+}
+.icon-copy{
+	background:url('icons/page_copy.png') no-repeat center center;
+}
+.icon-fram{
+	background:url('icons/exclamation_octagon_fram.png') no-repeat center center;
+}
+.icon-film{
+	background:url('icons/doc_film.png') no-repeat center center;
+}
+.icon-play{
+	background:url('icons/control_play.png') no-repeat center center;
+}
+
+
+/*add by gaof*/
+.tooltip{
+	opacity:1;
+	filter:alpha(opacity=100);
+}
+.anchor {background: url('../images/ext/anchor.png') no-repeat center center;}
+.next {background: url('../images/ext/next.png') no-repeat center center;}
+.previous {background: url('../images/ext/previous.png') no-repeat center center;}
+.tab_delete {background: url('../images/ext/tab_delete.png') no-repeat center center;}
+.tick {background: url('../images/ext/tick.png') no-repeat center center;}
+.bullet_blue {background: url('../images/ext/bullet_blue.png') no-repeat center center;}
+/*add by zhx*/
+.icon-teacher,.icon-studuents,.icon-classes,.icon-permiss,.icon-role,.icon-users,.icon-log,.icon-video,.icon-course,.icon-exercises,.icon-member,.icon-classmanage,.icon-schoolmanage,.icon-grademanage,.icon-coursemanage,.icon-specialtymanage{background:url("../images/ext/icon.png") no-repeat; width:32px; height:32px;}
+.icon-teacher{background-position:left top; }
+.icon-studuents{background-position:left -32px; }
+.icon-classes{background-position:left -64px; }
+.icon-permiss{background-position:left -96px; }
+.icon-role{background-position:left -128px; }
+.icon-users{background-position:left -160px; }
+.icon-log{background-position:left -192px; }
+.icon-video{background-position:left -224px; }
+.icon-course{background-position:left -256px; }
+.icon-exercises{background-position:left -288px;}
+.icon-member{background-position:left -320px;}
+.icon-classmanage{background-position:left -352px;}
+.icon-schoolmanage{background-position:left -384px;}
+.icon-grademanage{background-position:left -416px;}
+.icon-coursemanage{background-position:left -480px;}
+.icon-specialtymanage{background-position:left -448px;}
+
+
+.icon-arrowup{background:url("../images/gif.png") no-repeat left -80px; width:18px; height:20px;display:block;}
+.icon-arrowdown{background:url("../images/gif.png") no-repeat left -100px; width:18px; height:20px;display:block;}
+.icon-class{background:url('icons/class.png') no-repeat center center;}
+.icon-school{background:url('icons/school.png') no-repeat center center;}
+.icon-tag{background:url('icons/tag.png') no-repeat center center;}
+.icon-course2{background:url('icons/course2.png') no-repeat center center;}
+.icon-video2{background:url('icons/video.png') no-repeat center center;}
+.icon-import{background:url('icons/import.png') no-repeat center center;}
+.icon-course3{background:url('icons/course3.png') no-repeat center center;}
+.icon-coupons{background:url('icons/coupons.png') no-repeat center center;}
+.icon-topic-type{background:url('icons/topic-type.png') no-repeat center center;}
+.icon-dynamic{background:url('icons/dynamic.png') no-repeat center center;}
+.icon-list{background:url('icons/list.png') no-repeat center center;}
+.icon-recharge{background:url('icons/recharge.png') no-repeat center center;}
+.icon-topic{background:url('icons/topic.png') no-repeat center center;}
+.icon-details{background:url('icons/details.png') no-repeat center center;}
+.icon-grade{background:url('icons/grade.png') no-repeat center center;}
+.icon-up{background:url('icons/up.png') no-repeat center center;}
+.icon-down{background:url('icons/down.png') no-repeat center center;}
+.icon-del-key{background:url('icons/del-key.png') no-repeat center center;}
+.icon-del-stu{background:url('icons/del-stu.png') no-repeat center center;}
+.icon-del-all{background:url('icons/del-all.png') no-repeat center center;}
+.icon-sendback-money{background:url('icons/sendback-money.png') no-repeat center center;}
+.icon-sendback-card{background:url('icons/sendback-card.png') no-repeat center center;}
+.icon-graph{background:url('icons/graph.png') no-repeat center center;}
+.icon-akey-add{background:url('icons/akey-add.png') no-repeat center center;}
+.icon-status_outline{background:url('icons/status_outline.png') no-repeat center center;}
+.icon-arrow_down{background:url('icons/arrow_down.png') no-repeat center center;}
+.icon-arrow_up{background:url('icons/arrow_up.png') no-repeat center center;}
+/**/
+.icon-monitor{background:url('icons/monitor.png') no-repeat center center;}
+.icon-notification{background:url('icons/email_go.png') no-repeat center center;}

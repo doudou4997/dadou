@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.dadou.shop.goods.dao.GoodsDao">
+    <!--商品实体  -->
+    <resultMap type="com.dadou.shop.goods.pojos.Goods" id="goodsMap" >
+       <id property="id" column="id" />
+        <result property="goodsPicUrl" column="goodspicurl" />
+       <result property="goodsCode" column="goodscode" />
+       <result property="goodsName" column="goodsname" />
+       <result property="goodsPrice" column="goodsprice" />
+       <result property="goodsBrand" column="goodsbrand" />
+       <result property="goodsArea" column="goodsarea" />
+       <result property="goodsType" column="goodstype"/>
+        <result property="goodsPD" column="goodspd"/>
+        <result property="goodsEXP" column="goodsexp"/>
+        <result property="goodsDct" column="goodsdct"/>
+        <result property="goodsASP" column="goodsasp"/>
+        <result property="goodsNum" column="goodsnum"/>
+        <result property="goodsPoint" column="goodspoint"/>
+        <result property="goodsDesc" column="goodsdesc"/>
+        <result property="goodsShort" column="goodsshort"/>
+        <result property="flag" column="flag"/>
+        <result property="deleteflag" column="deleteflag"/>
+        <result property="inserttime" column="inserttime"/>
+        <result property="insertemp" column="insertemp"/>
+        <result property="updatetime" column="updatetime"/>
+        <result property="updateemp" column="updateemp"/>
+    </resultMap>
+    <sql id="base_columns">
+    dtg.id , dtg.goodspicurl,dtg.goodscode , dtg.goodsname , dtg.goodsprice , dtg.goodsbrand , dtg.goodsarea ,
+     dtg.goodstype , dtg.goodspd , dtg.goodsexp , dtg.goodsdct , dtg.goodsasp , dtg.goodsnum , dtg.goodspoint ,
+     dtg.goodsdesc , dtg.flag , dtg.goodsshort
+  </sql>
+
+    <sql id="order_sql">
+        <if test="order!=null and sort!=null">
+            order by ${sort} ${order}
+        </if>
+    </sql>
+    <!-- 动态查询语句的动态条件 -->
+    <sql id="dynamic_conditions">
+        <where>
+            dtg.deleteflag='0'
+            <if test="q_goodsName!=null and q_goodsName !=''">
+                and dtg.goodsname like CONCAT('%','${q_goodsName}','%' )
+            </if>
+            <if test="q_goodsCode!=null and q_goodsCode !=''">
+                and dtg.goodscode LIKE CONCAT('%','${q_goodsCode}','%' )
+            </if>
+            <if test="q_goodsType!=null and q_goodsType !=''">
+                and dtg.goodstype = #{q_goodsType}
+            </if>
+            <if test="q_goodsStatus!=null and q_goodsStatus !=''">
+                and dtg.flag = #{q_goodsStatus}
+            </if>
+        </where>
+    </sql>
+    <select id="findAll" resultMap="goodsMap">
+        select dtg.* from dt_goods dtg
+    </select>
+    <select id="count" resultType="java.lang.String">
+        select count(*) from dt_goods dtg
+        <include refid="dynamic_conditions"/>
+    </select>
+
+    <select id="findByPage" resultMap="goodsMap">
+        select <include refid="base_columns"/>
+        from dt_goods dtg
+        <include refid="dynamic_conditions"/>
+        <include refid="order_sql"/>
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.dadou.shop.goods.pojos.Goods">
+        insert into dt_goods(
+        goodspicurl, goodscode , goodsname , goodsprice , goodsbrand , goodsarea ,goodstype ,
+        goodspd , goodsexp , goodsdct , goodsasp , goodsnum , goodspoint ,
+        goodsdesc ,goodsshort ,inserttime , updatetime , insertemp , updateemp)
+        values(#{goodsPicUrl},#{goodsCode},#{goodsName},#{goodsPrice}, #{goodsBrand},#{goodsArea},#{goodsType},
+              #{goodsPD},#{goodsEXP},#{goodsDct}, #{goodsASP},#{goodsNum},#{goodsPoint},
+              #{goodsDesc},#{goodsShort},#{inserttime}, #{updatetime},#{insertemp},#{updateemp})
+    </insert>
+
+    <!-- 通过id删除商品信息 -->
+    <delete id="remove">
+        update dt_goods d set
+		d.updatetime=#{updatetime},d.updateemp=#{updateemp},d.deleteflag=#{deleteflag}
+		where d.ID=#{id}
+    </delete>
+</mapper>

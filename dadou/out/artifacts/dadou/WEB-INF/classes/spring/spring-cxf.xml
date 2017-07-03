@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd" >
+    <!-- 统一验证SoapHeader -->
+    <bean id="authIntercetpr" class="com.goldwind.api.ws.auth.AuthIntercetpr"/>
+    <!-- plm 发布的请求 -->
+    <bean id="ws_plm_sop" class="com.goldwind.api.plm.ws.RouteSopImpl"/>
+    <jaxws:endpoint id="plmsop" implementor="#ws_plm_sop" address="/PLM/GW_PLM_SOP">
+       <!-- input拦截器 -->
+       <jaxws:inInterceptors><ref bean="authIntercetpr"/></jaxws:inInterceptors>
+    </jaxws:endpoint>
+    
+</beans>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration [
+		<!ELEMENT configuration (settings|plugins|mappers)*>
+		<!ELEMENT settings (setting)*>
+		<!ELEMENT setting (#PCDATA)>
+		<!ATTLIST setting
+				name CDATA #REQUIRED
+				value CDATA #REQUIRED>
+		<!ELEMENT plugins (plugin)*>
+		<!ELEMENT plugin (property)*>
+		<!ATTLIST plugin
+				interceptor CDATA #REQUIRED>
+		<!ELEMENT property (#PCDATA)>
+		<!ATTLIST property
+				name CDATA #REQUIRED
+				value CDATA #REQUIRED>
+		<!ELEMENT mappers (mapper)*>
+		<!ELEMENT mapper (#PCDATA)>
+		<!ATTLIST mapper
+				resource CDATA #REQUIRED>
+		]>
+<configuration>
+	<settings>
+	    <!-- 开启二级缓存，默认是false -->
+		<setting name="cacheEnabled" value="true"/>
+		<!-- lazyLoadingEnabled:延迟加载启动，默认是false -->
+		<setting name="lazyLoadingEnabled" value="true" />
+		 <!-- aggressiveLazyLoading：积极的懒加载，false的话按需加载，默认是true -->
+		<setting name="aggressiveLazyLoading" value="false" />
+		<setting name="logImpl" value="STDOUT_LOGGING" />
+	</settings>
+	<!-- 分页插件 -->
+	<plugins>
+	  <plugin interceptor="com.framework.core.paginator.OffsetLimitInterceptor">
+	    <property name="dialectClass" value="com.framework.core.paginator.dialect.MySQLDialect"/>
+	  </plugin>
+	</plugins>
+	
+	
+	<mappers>
+	  <!--基础数据-->
+		<mapper resource="mybatis/sys/DictionaryDao.xml"/>
+	  <mapper resource="mybatis/sys/LogDao.xml"/>
+	  <mapper resource="mybatis/sys/EmployeeDao.xml"/>
+	  <mapper resource="mybatis/sys/DepartmentDao.xml"/>
+	  <mapper resource="mybatis/sys/RoleDao.xml"/>
+	  <mapper resource="mybatis/sys/MenuDao.xml"/>
+	  <mapper resource="mybatis/sys/PrivilegeDao.xml"/>
+	  <mapper resource="mybatis/sys/SysDao.xml"/>
+
+		<!--商品系统-->
+		<mapper resource="mybatis/shop/User.xml"/>
+		<mapper resource="mybatis/shop/Goods.xml"/>
+		<!--
+		<mapper resource="mybatis/shop/Brand.xml"/>
+		<mapper resource="mybatis/shop/Partner.xml"/>
+		<mapper resource="mybatis/shop/Storage.xml"/>
+-->
+
+	</mappers>
+	
+</configuration>	

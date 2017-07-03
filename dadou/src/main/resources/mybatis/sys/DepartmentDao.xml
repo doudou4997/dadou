@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.dadou.sys.dept.dao.DepartmentDao">
+    <!--部门实体  -->
+    <resultMap type="com.dadou.sys.dept.pojos.Department" id="departmentMap" >
+       <id property="id" column="id" />
+       <result property="deptName" column="deptName" />
+       <result property="parentId" column="parent_id" />
+       <result property="sortNum" column="sortNum" />
+       <result property="description" column="description" />
+       <result property="deleteFlag" column="deleteFlag" />
+       <result property="alpha" column="alpha"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="departmentMap">
+         select d.* from SYS_DEPARTMENT d
+    </select>
+    <select id="findById" resultMap="departmentMap" parameterType="java.lang.String">
+         select d.* from SYS_DEPARTMENT d where d.id = #{id}
+    </select>
+     <!-- 动态查询语句的动态条件 -->
+    <sql id="dynamic_conditions">
+       <where>
+          <if test="alpha!=null and alpha !=''">
+            d.alpha = #{alpha}
+          </if>
+          <if test="deptName!=null and deptName!=''">
+            and d.deptName like concat(concat('%', #{deptName}),'%')
+          </if>
+       </where>
+    </sql>
+    <select id="getNextSortNumByParentId" resultType="java.lang.String" parameterType="java.lang.String">
+        select nvl(max(sortnum),0)+1 as SORTNUM from SYS_DEPARTMENT where parent_id=#{parentId}
+    </select>
+    <select id="findDeptNum" resultType="java.lang.String">
+       select count(*) as COUNTNUM from SYS_DEPARTMENT
+    </select>
+    <select id="findDeptName" resultType="java.lang.String">
+       select deptName DEPTNAME from SYS_DEPARTMENT t where t.id=#{id}
+    </select>
+    <select id="count" resultType="java.lang.String">
+    	select count(*) from SYS_DEPARTMENT d
+    	<include refid="dynamic_conditions"/>
+    </select>  
+    <select id="findByPage" resultMap="departmentMap">
+        select d.*
+        from SYS_DEPARTMENT d
+        <include refid="dynamic_conditions"/>
+    </select>
+	<insert id="save" parameterType="com.dadou.sys.dept.pojos.Department">
+	  insert into SYS_DEPARTMENT(id,deptName,parent_id,sortNum,description,deleteFlag,alpha)
+	  values(#{id},#{deptName},#{parentId},#{sortNum},#{description},#{deleteFlag},#{alpha})
+	</insert>
+    <!-- 动态更新 -->
+	<update id="update">
+		update SYS_DEPARTMENT d
+		<trim prefix="set" suffixOverrides=",">
+		    <if test="deptName!=null">
+		        d.deptName = #{deptName},
+		    </if>
+		    <if test="parentId!=null">
+		        d.parent_id = #{parentId},
+		    </if>		
+		    <if test="sortNum!=null">
+		        d.sortNum = #{sortNum},
+		    </if>
+		    <if test="description!=null">
+		        d.description = #{description},
+		    </if>
+		    <if test="deleteFlag!=null">
+		        d.deleteFlag = #{deleteFlag},
+		    </if>	
+		    <if test="alpha!=null">
+		        d.alpha = #{alpha}
+		    </if>	
+		</trim>
+		<where>
+			d.id = #{id};
+		</where>
+	</update>
+	<delete id="removeById" parameterType="java.lang.String">
+	   delete from SYS_DEPARTMENT where id = #{id}
+	</delete>
+</mapper>
