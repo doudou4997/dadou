@@ -17,19 +17,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Department对象的操作Action. <br>
- * 负责Department的管理及各种操作
+ * 货柜对象的操作Action. <br>
+ * 负责货柜的管理及各种操作
  */
 @Controller
 @RequestMapping(value="/goods",produces="text/html;charset=UTF-8")
@@ -123,8 +120,8 @@ public class GoodsController extends BaseController {
 		String goodsCoade = goods.getGoodsCode();
 		if(!StringUtils.isEmpty(goodsCoade)){
 			//获取商品信息成功，增加关键字段
-			goods.setFlag("0");//未上架
-			goods.setDeleteflag("0");
+			//goods.setFlag("0");//未上架
+			//goods.setDeleteflag("0");
 			goods.setInserttime(DateUtils.formatDate());
 			goods.setInsertemp(LoginManager.getCurrentUserId());
 		}
@@ -176,6 +173,13 @@ public class GoodsController extends BaseController {
 
 
 
+
+
+
+
+
+/**
+
 	@RequestMapping("/savePic")
 	@ResponseBody
 	public String saveStampdefByForm(MultipartFile picFile,
@@ -200,13 +204,13 @@ public class GoodsController extends BaseController {
 		}
 	}
 
-
+ **/
 	/***
 	 * 保存文件
 	 *
 	 * @param file
 	 * @return
-	 */
+	 *
 	private boolean saveFile(HttpServletRequest request, MultipartFile file) {
 		// 判断文件是否为空
 		if (!file.isEmpty()) {
@@ -228,4 +232,6 @@ public class GoodsController extends BaseController {
 		}
 		return false;
 	}
+
+	*/
 }

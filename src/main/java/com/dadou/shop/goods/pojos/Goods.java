@@ -1,7 +1,7 @@
 package com.dadou.shop.goods.pojos;
 
 /**
- * 终端用户实体类
+ * 商品实体类
  * 
  * @author dadou
  * 
