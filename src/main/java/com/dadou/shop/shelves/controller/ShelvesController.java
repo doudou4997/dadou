@@ -2,6 +2,8 @@ package com.dadou.shop.shelves.controller;
 
 import com.dadou.shop.shelves.pojos.Shelves;
 import com.dadou.shop.shelves.service.ShelvesService;
+import com.dadou.shop.shop_enum.GoodsFlag;
+import com.dadou.shop.shop_enum.ShelvesType;
 import com.dadou.sys.CmsConst;
 import com.dadou.sys.dic.service.DictionaryService;
 import com.dadou.sys.login.LoginManager;
@@ -72,10 +74,15 @@ public class ShelvesController extends BaseController {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>(shelveslist.size());
 		for (Shelves shelves: shelveslist) {
 			Map<String, String> shelvesMap = new HashMap<String, String>();
-
+			shelvesMap.put("id",shelves.getId());
+			shelvesMap.put("shelvesCode",shelves.getShelvesCode());
+			shelvesMap.put("shelvesType", ShelvesType.getName(Integer.valueOf(shelves.getShelvesType())));
+			shelvesMap.put("shelvesName",shelves.getShelvesName());
+			shelvesMap.put("flag", GoodsFlag.getName(Integer.valueOf(shelves.getFlag())));
+			shelvesMap.put("shelvesCapacity", String.valueOf(shelves.getShelvesCapacity()));
+			shelvesMap.put("shelvesAddress",shelves.getShelvesAddress());
 			list.add(shelvesMap);
 		}
-
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put(TOTAL, pagination.getMaxElements());
 		resultMap.put(ROWS, list);

@@ -51,6 +51,7 @@
 		<!--商品系统-->
 		<mapper resource="mybatis/shop/User.xml"/>
 		<mapper resource="mybatis/shop/Goods.xml"/>
+		<mapper resource="mybatis/shop/Shelves.xml"/>
 		<!--
 		<mapper resource="mybatis/shop/Brand.xml"/>
 		<mapper resource="mybatis/shop/Partner.xml"/>
