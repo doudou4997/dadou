@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.dadou.shop.shelves.dao.ShelvesDao">
+    <!--货柜实体  -->
+    <resultMap type="com.dadou.shop.shelves.pojos.Shelves" id="shelvesMap" >
+       <id property="id" column="id" />
+        <result property="shelvesCode" column="shelvescode" />
+       <result property="shelvesName" column="shelvesname" />
+       <result property="shelvesType" column="shelvestype" />
+       <result property="shelvesAddress" column="shelvesaddress" />
+       <result property="shelvesCapacity" column="shelvescapacity" />
+        <result property="flag" column="flag"/>
+        <result property="deleteflag" column="deleteflag"/>
+        <result property="inserttime" column="inserttime"/>
+        <result property="insertemp" column="insertemp"/>
+        <result property="updatetime" column="updatetime"/>
+        <result property="updateemp" column="updateemp"/>
+    </resultMap>
+    <sql id="base_columns">
+        dts.id,dts.shelvescode,dts.shelvesname,dts.shelvestype,dts.shelvesaddress,dts.shelvescapacity,
+        dts.flag,dts.deleteflag,dts.inserttime,dts.insertemp,dts.updatetime,dts.updateemp
+  </sql>
+
+    <sql id="order_sql">
+        <if test="order!=null and sort!=null">
+            order by ${sort} ${order}
+        </if>
+    </sql>
+    <!-- 动态查询语句的动态条件 -->
+    <sql id="dynamic_conditions">
+        <where>
+            dts.deleteflag='0'
+            <if test="q_shelvesName!=null and q_shelvesName !=''">
+                and dts.shelvesname like CONCAT('%','${q_shelvesName}','%' )
+            </if>
+            <if test="q_shelvesCode!=null and q_shelvesCode !=''">
+                and dts.shelvescode LIKE CONCAT('%','${q_shelvesCode}','%' )
+            </if>
+            <if test="q_shelvesType!=null and q_shelvesType !=''">
+                and dts.shelvestype = #{q_shelvesType}
+            </if>
+            <if test="q_shelvesStatus!=null and q_shelvesStatus !=''">
+                and dts.flag = #{q_shelvesStatus}
+            </if>
+        </where>
+    </sql>
+    <select id="findAll" resultMap="shelvesMap">
+        select dts.* from DT_SHELVES dts
+    </select>
+    <select id="count" resultType="java.lang.String">
+        select count(*) from DT_SHELVES dts
+        <include refid="dynamic_conditions"/>
+    </select>
+
+    <select id="findByPage" resultMap="shelvesMap">
+        select <include refid="base_columns"/>
+        from DT_SHELVES dts
+        <include refid="dynamic_conditions"/>
+        <include refid="order_sql"/>
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.dadou.shop.shelves.pojos.Shelves">
+        insert into DT_SHELVES(
+          shelvescode,shelvesname,shelvestype,shelvesaddress,shelvescapacity,
+          inserttime , updatetime , insertemp , updateemp)
+        values(#{shelvesCode},#{shelvesName},#{shelvesType},#{shelvesAddress}, #{shelvesCapacity},
+              #{inserttime}, #{updatetime},#{insertemp},#{updateemp})
+    </insert>
+
+    <!-- 通过id删除货柜信息 -->
+    <delete id="remove">
+        update DT_SHELVES dts set
+		dts.updatetime=#{updatetime},dts.updateemp=#{updateemp},dts.deleteflag=#{deleteflag}
+		where dts.ID=#{id}
+    </delete>
+</mapper>

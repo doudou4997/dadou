@@ -2,23 +2,22 @@ package com.dadou.shop.shop_enum;
 
 /**
  * Created by dadou on 2017/6/22.
- * 商品状态 1未上架 2上架 3缺货报警
+ * 商品类型 1零食 2生鲜
  */
-public enum GoodsFlag {
-        UNUSED("未上架", 1),
-        USED("上架", 2),
-        WARNING("缺货报警", 3);
+public enum GoodsType {
+        SNACKS("零食", 1),
+        FRESH("生鲜", 2);
         // 成员变量
         private String name;
         private int index;
         // 构造方法
-        private GoodsFlag(String name, int index) {
+        private GoodsType(String name, int index) {
             this.name = name;
             this.index = index;
         }
         // 普通方法
         public static String getName(int index) {
-            for (GoodsFlag c : GoodsFlag.values()) {
+            for (GoodsType c : GoodsType.values()) {
                 if (c.getIndex() == index) {
                     return c.name;
                 }

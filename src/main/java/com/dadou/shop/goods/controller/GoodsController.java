@@ -3,8 +3,8 @@ package com.dadou.shop.goods.controller;
 import com.dadou.shop.goods.pojos.Goods;
 import com.dadou.shop.goods.service.GoodsService;
 import com.dadou.shop.shop_enum.GoodsFlag;
+import com.dadou.shop.shop_enum.GoodsType;
 import com.dadou.sys.CmsConst;
-import com.dadou.sys.dic.pojos.Dictionary;
 import com.dadou.sys.dic.service.DictionaryService;
 import com.dadou.sys.login.LoginManager;
 import com.framework.core.exception.ResultMsg;
@@ -78,11 +78,11 @@ public class GoodsController extends BaseController {
 			Map<String, String> goodsMap = new HashMap<String, String>();
 			goodsMap.put("id", String.valueOf(goods.getId()));
 			goodsMap.put("goodsCode", goods.getGoodsCode());
-			Dictionary goodsType = dictionaryService.findByKeyAndType(goods.getGoodsType(),Dictionary.GOODS_TYPE);
-			if(goodsType!=null){
-				goodsMap.put("goodsType", goodsType.getValue());
-			}
-
+			//Dictionary goodsType = dictionaryService.findByKeyAndType(goods.getGoodsType(),Dictionary.GOODS_TYPE);
+			//if(goodsType!=null){
+			//	goodsMap.put("goodsType", goodsType.getValue());
+			//}
+			goodsMap.put("goodsType", GoodsType.getName(Integer.valueOf(goods.getGoodsType())));
 			goodsMap.put("goodsName", goods.getGoodsName());
 			goodsMap.put("goodsPrice", String.valueOf(goods.getGoodsPrice()));
 			goodsMap.put("flag", GoodsFlag.getName(Integer.valueOf(goods.getFlag())));
