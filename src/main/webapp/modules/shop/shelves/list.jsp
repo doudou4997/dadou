@@ -45,11 +45,26 @@ h2 {
 			</tr>
 		</table>
 	</form>
-	<table id="shelves-data-table"  width="100%"></table>
+</div>
+<table id="shelves-data-table" height="300px" width="100%"></table>
+<div  style="width:60%;height:300px;text-align:center;">
+	<table id="layer-data-table"></table>
 </div>
 
 <!-- 添加货柜信息 -->
-<div id="addShelves_Win"   title="新添货柜" style="width:850px;height:450px;"></div>
+<div id="addShelves_Win" class="easyui-dialog" title="添加货柜"
+	 style="width:450px;height:300px;"
+	 data-options="iconCls:'icon-clipboardtext',resizable:true,modal:true,closed:true">
+	<iframe width="100%" height="99%" name="addShelves_Frame"
+			id="addShelves_Frame" frameborder="0"></iframe>
+</div>
+<!-- 添加货架信息 -->
+<div id="addLayer_Win" class="easyui-dialog" title="添加货架"
+	 style="width:650px;height:450px;"
+	 data-options="iconCls:'icon-clipboardtext',resizable:true,modal:true,closed:true">
+	<iframe width="100%" height="99%" name="addLayer_Frame"
+			id="addLayer_Frame" frameborder="0"></iframe>
+</div>
 
 <script type="text/javascript">
     /**
@@ -65,10 +80,12 @@ h2 {
     }
     //避免重名
     var shelvesList = new Object();
+    var layerList = new Object();
     // 打开新添货柜窗口
     shelvesList.addshelves = function(){
         var path="${ctx}/shelves/add";
-        $('#addShelves_Win').dialog({href:path}).dialog("open");
+        document.getElementById("addShelves_Frame").src = path;
+        $('#addShelves_Win').dialog('open');
     }
 
     // 删除货柜
@@ -99,7 +116,6 @@ h2 {
     var parentId;
     //查询
     function searchx() {
-
         parentId = "";
         $('#shelves-data-table').datagrid('reload',
 			{
@@ -112,6 +128,7 @@ h2 {
     }
     //初始化
     $(function() {
+        //货柜信息
         $('#shelves-data-table').datagrid({
             url : '${ctx}/shelves/listAjax',
             rownumbers : true,
@@ -119,15 +136,15 @@ h2 {
             singleSelect : true,
             fitColumns: true,//列宽 自适应
             pagination : true,
-            height:$(window).height() - 110,
+            height:$(window).height() - 310,
             onClickRow:function(index,row) {
-               // parentId=row.id;
-              //  $('#settingItem-data-table').datagrid('reload', {
-              //      groupId:parentId
-              //  });
+                parentId=row.id;
+                $('#layer-data-table').datagrid('reload', {
+                    groupId:parentId
+                });
             },
             onLoadSuccess:function(data){
-                //$('#settingItem-data-table').datagrid('loadData', { total: 0, rows: [] });
+                $('#layer-data-table').datagrid('loadData', { total: 0, rows: [] });
             },
             toolbar : [{
                 text : '添加',
@@ -172,6 +189,44 @@ h2 {
                 $('.editcls').linkbutton({text:'编辑',plain:true,iconCls:'icon-edit'});
             }*/
         });
+
+        //物料子表
+        $('#layer-data-table').datagrid({
+            url : '${ctx}/shelves/findLayerByShelves',
+            rownumbers : true,
+            autoRowHeight : true,
+            singleSelect : true,
+            fitColumns: true,
+            height: 200,
+            toolbar : [{
+                text : '添加',
+                iconCls : 'icon-add',
+                handler : function() {
+                    //materialSettingItemList.addMaterial(parentId);
+                }
+            },'-', {
+                text : '删除',
+                iconCls : 'icon-no',
+                handler : function() {
+                    //materialSettingItemList.delMaterial();
+                }
+            }, '-'],
+            frozenColumns : [ [
+                {field : 'id',align : 'center',checkbox : true},
+            ] ],
+            columns : [ [
+                {field : 'materialCode',title : '货架序号',width : 40,align : 'center'},
+                {field : 'materialName',title : '货架名称',width : 80,align : 'center'},
+                {field:'opt',title:'操作',width:30,align:'center',
+                    formatter:function(value,rec){
+                        var btn = '<a class="editcls" onclick="editRow(\''+rec.projectname+'\',\''+rec.projectpackage+'\')" href="javascript:void(0)">编辑</a>';
+                        //+'&nbsp;&nbsp;<a class="editcls" onclick="editRow(\''+rec.projectname+'\',\''+rec.projectpackage+'\')" href="javascript:void(0)">上架</a>';
+                        return btn;
+                    }
+                }
+            ] ]
+        });
+
 		//下拉列表
         $('#q_shelvesStatus').combobox({
             panelHeight : 'auto',

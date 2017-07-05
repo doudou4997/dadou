@@ -1,12 +1,15 @@
 package com.dadou.shop.shelves.controller;
 
+import com.dadou.shop.shelves.pojos.Layer;
 import com.dadou.shop.shelves.pojos.Shelves;
+import com.dadou.shop.shelves.service.LayerService;
 import com.dadou.shop.shelves.service.ShelvesService;
 import com.dadou.shop.shop_enum.GoodsFlag;
 import com.dadou.shop.shop_enum.ShelvesType;
 import com.dadou.sys.CmsConst;
 import com.dadou.sys.dic.service.DictionaryService;
 import com.dadou.sys.login.LoginManager;
+import com.framework.core.exception.BaseAppException;
 import com.framework.core.exception.ResultMsg;
 import com.framework.core.page.Pagination;
 import com.framework.core.utils.*;
@@ -36,6 +39,9 @@ public class ShelvesController extends BaseController {
 	/**货柜处理类**/
 	@Resource(name="shelvesService")
 	private ShelvesService shelvesService;
+	/**货架处理类**/
+	@Resource(name="layerService")
+	private LayerService layerService;
 
 	/**基础数据处理类**/
 	@Resource(name="im_dictionaryService")
@@ -153,6 +159,43 @@ public class ShelvesController extends BaseController {
 			logger.error(error);
 		}
 		return getJsonStr();
+	}
+
+
+	/*******
+	 * 货架信息
+	 */
+
+	/**
+	 * 根据货柜信息获取货架信息
+	 */
+	@RequestMapping(value="/findLayerByShelves")
+	@ResponseBody
+	public String findLayerByShelves() {
+		List<Layer> layerList = new ArrayList<>();
+		try {
+			String shelvesId = ActionContextUtils.getParameter("shelvesId");
+			// 判断关联配置ID是否存在
+			if (!"null".equals(shelvesId) && StringUtils.isNotEmpty(shelvesId)) {
+
+				layerList = layerService.findByPid(shelvesId);
+
+				return JsonUtils.toJsonIncludeNull(layerList);
+			}
+		} catch (Exception ex) {
+			String error = ExceptionUtils.formatStackTrace(ex);
+			logger.error(error);
+			if (ex instanceof BaseAppException) {
+				// 回传信息
+				this.putRootJson(ResultMsg.MSG, ex.getMessage());
+				this.putRootJson(ResultMsg.SUCCESS, false);
+			} else {
+				this.putRootJson(ResultMsg.MSG, "查询失败！");
+				this.putRootJson(ResultMsg.SUCCESS, false);
+			}
+			return getJsonStr();
+		}
+		return JsonUtils.toJsonIncludeNull(layerList);
 	}
 
 

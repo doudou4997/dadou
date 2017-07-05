@@ -52,10 +52,11 @@
 		<mapper resource="mybatis/shop/User.xml"/>
 		<mapper resource="mybatis/shop/Goods.xml"/>
 		<mapper resource="mybatis/shop/Shelves.xml"/>
+		<mapper resource="mybatis/shop/Layer.xml"/>
 		<!--
 		<mapper resource="mybatis/shop/Brand.xml"/>
 		<mapper resource="mybatis/shop/Partner.xml"/>
-		<mapper resource="mybatis/shop/Storage.xml"/>
+
 -->
 
 	</mappers>

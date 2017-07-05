@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Map;
 
 /**
- * 商品管理
+ * 货柜管理
  */
 @Repository("shelvesDao")
 public class ShelvesDao extends GenericMybatisDao<Shelves, String> {
