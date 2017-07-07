@@ -32,8 +32,8 @@ public class ShelvesService {
 	 */
 	public String save(Shelves shelves) {
 		int returnId = shelvesDao.save(shelves);
-		String goodsCode = String.valueOf(returnId);
-		return goodsCode;
+		String shelvesID = String.valueOf(returnId);
+		return shelvesID;
 	}
 	/**
 	 * 删除货柜信息

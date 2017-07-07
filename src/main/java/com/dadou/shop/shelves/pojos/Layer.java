@@ -9,6 +9,10 @@ public class Layer{
      */
     private String id;
     /**
+     * 货架id
+     */
+    private String id_shelves;
+    /**
      * 货架序号
      */
     private String layerIndex;
@@ -31,6 +35,14 @@ public class Layer{
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getId_shelves() {
+        return id_shelves;
+    }
+
+    public void setId_shelves(String id_shelves) {
+        this.id_shelves = id_shelves;
     }
 
     public String getLayerIndex() {

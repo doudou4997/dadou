@@ -10,5 +10,4 @@ import org.springframework.stereotype.Repository;
 @Repository("layerDao")
 public class LayerDao extends GenericMybatisDao<Layer, String> {
 
-
 }

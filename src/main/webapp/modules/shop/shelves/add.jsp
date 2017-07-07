@@ -7,7 +7,8 @@
                 <th>货柜条码：</th>
                 <td>
                     <input class="easyui-numberbox" type="text"  id="shelvesCode" name="shelvesCode"
-                           data-options="validType:'length[1,13]',required:true,missingMessage:'货柜条码不能为空'"   style="width: 60%"/>
+                           data-options="validType:'length[1,13]',required:true,missingMessage:'货柜条码不能为空'"
+                           style="width: 60%"/>
                     &nbsp;<span style="color:#FF0000;">*</span>
                     <a href="javascript:void(0)" id="addShelvesCode"
                        class="easyui-linkbutton" iconCls="icon-search">校验</a>

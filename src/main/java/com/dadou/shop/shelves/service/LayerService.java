@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dadou on 2017/7/5.
@@ -28,5 +29,18 @@ public class LayerService {
         return returnList;
     }
 
+    /**
+    *保存货架信息
+     */
+    public int save(Layer layer){
+        int returnInt = layerDao.save(layer);
+        return returnInt;
+    }
+    /**
+     *删除货架信息
+     */
+    public void del(Map<String, Object> params){
+        layerDao.remove(params);
+    }
 
 }

@@ -95,14 +95,11 @@ public class ShelvesController extends BaseController {
 		String jsonData = JsonUtils.toJsonIncludeNull(resultMap);
 		return jsonData;
 	}
-
-
 	/**
 	 * 添加货柜
 	 */
 	@RequestMapping(value="/add")
 	public String add(Map<String,Object> map) {
-
 		//添加货柜
 		return PREFIX+"/add";
 	}
@@ -125,10 +122,10 @@ public class ShelvesController extends BaseController {
 		try {
 			this.shelvesService.save(shelves);
 			this.putRootJson(ResultMsg.SUCCESS, true);
-			this.putRootJson(ResultMsg.MSG, "商品保存成功!");
+			this.putRootJson(ResultMsg.MSG, "货柜保存成功!");
 		} catch (Exception e) {
 			this.putRootJson(ResultMsg.SUCCESS, false);
-			this.putRootJson(ResultMsg.MSG, "商品保存失败!");
+			this.putRootJson(ResultMsg.MSG, "货柜保存失败!");
 			String error = ExceptionUtils.formatStackTrace(e);
 			logger.error(error);
 			saveLog(error);
@@ -136,12 +133,13 @@ public class ShelvesController extends BaseController {
 		return getJsonStr();
 	}
 
+
 	/**
 	 * 删除货柜
 	 */
 	@RequestMapping(value="/del")
 	@ResponseBody
-	public String removeEmp(@RequestParam String id){
+	public String removeShelves(@RequestParam String id){
 		try {
 			Map<String, Object> params = new HashMap<>();
 			params.put("id",id);
@@ -197,6 +195,65 @@ public class ShelvesController extends BaseController {
 		}
 		return JsonUtils.toJsonIncludeNull(layerList);
 	}
+	/**
+	 * 添加货架
+	 */
+	@RequestMapping(value="/addLayer")
+	public String addLayer(Map<String,Object> map) {
+		map.put("id_shelves", ActionContextUtils.getParameter("shelvesId"));
+		//添加货架
+		return PREFIX+"/addLayer";
+	}
+
+	/**
+	 * 保存添加的货架
+	 */
+	@RequestMapping(value="/saveLayer")
+	@ResponseBody
+	public String saveLayer(Layer layer) {
+		//货架序号
+		String layerIndex = layer.getLayerIndex();
+		if(!StringUtils.isEmpty(layerIndex)){
+			layer.setInserttime(DateUtils.formatDate());
+			layer.setInsertemp(LoginManager.getCurrentUserId());
+		}
+		try {
+			this.layerService.save(layer);
+			this.putRootJson(ResultMsg.SUCCESS, true);
+			this.putRootJson(ResultMsg.MSG, "货架保存成功!");
+		} catch (Exception e) {
+			this.putRootJson(ResultMsg.SUCCESS, false);
+			this.putRootJson(ResultMsg.MSG, "货架保存失败!");
+			String error = ExceptionUtils.formatStackTrace(e);
+			logger.error(error);
+			saveLog(error);
+		}
+		return getJsonStr();
+	}
 
 
+	/**
+	 * 删除货柜
+	 */
+	@RequestMapping(value="/delLayer")
+	@ResponseBody
+	public String removeLayer(@RequestParam String id){
+		try {
+			Map<String, Object> params = new HashMap<>();
+			params.put("id",id);
+			params.put("deleteflag","1");
+			params.put("updateemp",LoginManager.getCurrentUserId());
+			params.put("updatetime",DateUtils.formatDate());
+			layerService.del(params);
+			putRootJson(ResultMsg.SUCCESS, true);
+			putRootJson(ResultMsg.MSG, "货架删除成功!");
+		} catch (Exception e) {
+			putRootJson(ResultMsg.SUCCESS, false);
+			putRootJson(ResultMsg.MSG, "货架删除失败...");
+			String error = ExceptionUtils.formatStackTrace(e);
+			// 记录异常信息
+			logger.error(error);
+		}
+		return getJsonStr();
+	}
 }

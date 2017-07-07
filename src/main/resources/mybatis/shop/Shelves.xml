@@ -46,7 +46,7 @@
         </where>
     </sql>
     <select id="findAll" resultMap="shelvesMap">
-        select dts.* from DT_SHELVES dts
+        select dts.* from DT_SHELVES dts AND dts.deleteflag='0'
     </select>
     <select id="count" resultType="java.lang.String">
         select count(*) from DT_SHELVES dts

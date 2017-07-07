@@ -5,8 +5,9 @@
     <!--货柜实体  -->
     <resultMap type="com.dadou.shop.shelves.pojos.Layer" id="layerMap" >
        <id property="id" column="id" />
-        <result property="layerIndex" column="shelvescode" />
-       <result property="layerName" column="shelvesname" />
+        <result property="id_shelves" column="id_shelves" />
+        <result property="layerIndex" column="layerindex" />
+       <result property="layerName" column="layername" />
         <result property="deleteflag" column="deleteflag"/>
         <result property="inserttime" column="inserttime"/>
         <result property="insertemp" column="insertemp"/>
@@ -16,62 +17,25 @@
     <sql id="base_columns">
        dtl.deleteflag,dtl.inserttime,dtl.insertemp,dtl.updatetime,dtl.updateemp
   </sql>
-
-    <sql id="order_sql">
-        <if test="order!=null and sort!=null">
-            order by ${sort} ${order}
-        </if>
-    </sql>
-    <!-- 动态查询语句的动态条件 -->
-    <sql id="dynamic_conditions">
-        <where>
-            dtl.deleteflag='0'
-            <if test="q_shelvesName!=null and q_shelvesName !=''">
-                and dtl.shelvesname like CONCAT('%','${q_shelvesName}','%' )
-            </if>
-            <if test="q_shelvesCode!=null and q_shelvesCode !=''">
-                and dtl.shelvescode LIKE CONCAT('%','${q_shelvesCode}','%' )
-            </if>
-            <if test="q_shelvesType!=null and q_shelvesType !=''">
-                and dtl.shelvestype = #{q_shelvesType}
-            </if>
-            <if test="q_shelvesStatus!=null and q_shelvesStatus !=''">
-                and dtl.flag = #{q_shelvesStatus}
-            </if>
-        </where>
-    </sql>
-    <select id="findByPId" resultMap="layerMap" useCache="false">
+    <select id="findByPId" resultMap="layerMap">
         select dtl.* from DT_SHELVES_LAYER dtl
-        where dtl.id_shelves=#{shelvesId}
+        where dtl.deleteflag='0' AND dtl.id_shelves=#{shelvesId}
+        ORDER BY layerindex ASC
     </select>
 
-    <select id="findAll" resultMap="shelvesMap">
-        select dtl.* from DT_SHELVES_LAYER dts
-    </select>
-    <select id="count" resultType="java.lang.String">
-        select count(*) from DT_SHELVES dts
-        <include refid="dynamic_conditions"/>
-    </select>
 
-    <select id="findByPage" resultMap="shelvesMap">
-        select <include refid="base_columns"/>
-        from DT_SHELVES dts
-        <include refid="dynamic_conditions"/>
-        <include refid="order_sql"/>
-    </select>
-
-    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.dadou.shop.shelves.pojos.Shelves">
-        insert into DT_SHELVES(
-          shelvescode,shelvesname,shelvestype,shelvesaddress,shelvescapacity,
-          inserttime , updatetime , insertemp , updateemp)
-        values(#{shelvesCode},#{shelvesName},#{shelvesType},#{shelvesAddress}, #{shelvesCapacity},
-              #{inserttime}, #{updatetime},#{insertemp},#{updateemp})
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.dadou.shop.shelves.pojos.Layer">
+        insert into DT_SHELVES_LAYER(
+        id_shelves,layerindex, layername,
+        inserttime , updatetime , insertemp , updateemp)
+        values(#{id_shelves},#{layerIndex},#{layerName},
+        #{inserttime}, #{updatetime},#{insertemp},#{updateemp})
     </insert>
 
-    <!-- 通过id删除货柜信息 -->
+    <!-- 通过id删除货架信息 -->
     <delete id="remove">
-        update DT_SHELVES dts set
-		dtl.updatetime=#{updatetime},dtl.updateemp=#{updateemp},dtl.deleteflag=#{deleteflag}
-		where dtl.ID=#{id}
+        update DT_SHELVES_LAYER dtL set
+        dtL.updatetime=#{updatetime},dtL.updateemp=#{updateemp},dtL.deleteflag=#{deleteflag}
+        where dtL.ID=#{id}
     </delete>
 </mapper>

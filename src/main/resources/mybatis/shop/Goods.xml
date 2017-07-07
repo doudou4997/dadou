@@ -57,7 +57,7 @@
         </where>
     </sql>
     <select id="findAll" resultMap="goodsMap">
-        select dtg.* from dt_goods dtg
+        select dtg.* from dt_goods dtg where  dtg.deleteflag='0'
     </select>
     <select id="count" resultType="java.lang.String">
         select count(*) from dt_goods dtg
