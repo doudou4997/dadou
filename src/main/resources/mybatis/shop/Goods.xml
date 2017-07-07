@@ -87,4 +87,41 @@
 		d.updatetime=#{updatetime},d.updateemp=#{updateemp},d.deleteflag=#{deleteflag}
 		where d.ID=#{id}
     </delete>
+
+    <select id="getUnChoseList" resultMap="goodsMap">
+        SELECT
+            dtg.*
+        FROM
+            dt_goods dtg
+        WHERE
+            dtg.deleteflag = '0'
+        AND dtg.flag = '2'
+        AND dtg.id NOT IN(
+            SELECT
+                dlg.id_goods
+            FROM
+                DT_LAYER_GOODS dlg
+            WHERE
+                dlg.id_layer = #{layerId}
+        )
+    </select>
+
+    <select id="getChosenList" resultMap="goodsMap">
+        SELECT
+        dtg.*
+        FROM
+        dt_goods dtg
+        WHERE
+        dtg.deleteflag = '0'
+        AND dtg.flag = '2'
+        AND dtg.id  IN(
+        SELECT
+        dlg.id_goods
+        FROM
+        DT_LAYER_GOODS dlg
+        WHERE
+        dlg.id_layer = #{layerId}
+        )
+    </select>
+
 </mapper>

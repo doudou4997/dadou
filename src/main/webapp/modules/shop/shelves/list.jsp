@@ -51,7 +51,12 @@ body {
 </div>
 <!-- 添加货架信息 -->
 <div id="addLayer_Win" class="easyui-dialog" title="添加货架"
-	 style="width:650px;height:450px;"
+	 style="width:300px;height:300px;"
+	 data-options="iconCls:'icon-clipboardtext',resizable:true,modal:true,closed:true">
+</div>
+<!-- 上货信息 -->
+<div id="addGoods_Win" class="easyui-dialog" title="上货"
+	 style="width:800px;height:600px;"
 	 data-options="iconCls:'icon-clipboardtext',resizable:true,modal:true,closed:true">
 </div>
 
@@ -156,6 +161,12 @@ body {
         });
 
 	}
+	//打开上货窗口
+	function goAddGoods(layerId,layerIndex,layerName){
+        var path="${ctx}/shelves/goAddGoods?layerId="+layerId+"&layerIndex="+layerIndex;
+        $('#addGoods_Win').dialog({href:path}).dialog("open");
+	}
+
     //初始化
     $(function() {
         //货柜信息
@@ -241,15 +252,16 @@ body {
                     layerList.delLayer();
                 }
             }, '-'],
-            frozenColumns : [ [
-                {field : 'id',align : 'center',checkbox : true},
-            ] ],
+           // frozenColumns : [ [
+
+           // ] ],
             columns : [ [
+                {field : 'id',align : 'center',checkbox : true},
                 {field : 'layerIndex',title : '货架序号',width : 40,align : 'center'},
                 {field : 'layerName',title : '货架名称',width : 80,align : 'center'},
                 {field:'opt',title:'操作',width:30,align:'center',
                     formatter:function(value,rec){
-                        var btn = '<a class="addGoods" onclick="addGoods(\''+rec.projectname+'\',\''+rec.projectpackage+'\')" href="javascript:void(0)">上货</a>';
+                        var btn = '<a class="addGoods" onclick="goAddGoods(\''+rec.id+'\',\''+rec.layerIndex+'\',\''+rec.layerName+'\')" href="javascript:void(0)">上货</a>';
                         //+'&nbsp;&nbsp;<a class="editcls" onclick="editRow(\''+rec.projectname+'\',\''+rec.projectpackage+'\')" href="javascript:void(0)">上架</a>';
                         return btn;
                     }
@@ -335,6 +347,32 @@ body {
                 iconCls:'icon-cancel',
                 handler:function(){
                     $('#addLayer_Win').dialog("close");
+                }
+            }]
+        });
+
+        //上货
+        $('#addGoods_Win').dialog({
+            title: '上货',
+            width: 800,
+            height:600,
+            closed: true,
+            cache: false,
+            iconCls:'icon-group',
+            resizable:false,
+            modal: true,
+            buttons: [{
+                text:'确定',
+                iconCls:'icon-ok',
+                handler:function(){
+                        //上架
+                        doAdd();
+                }
+            },{
+                text:'关闭',
+                iconCls:'icon-cancel',
+                handler:function(){
+                    $('#addGoods_Win').dialog("close");
                 }
             }]
         });

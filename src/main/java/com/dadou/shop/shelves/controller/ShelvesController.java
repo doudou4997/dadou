@@ -1,5 +1,7 @@
 package com.dadou.shop.shelves.controller;
 
+import com.dadou.shop.goods.pojos.Goods;
+import com.dadou.shop.goods.service.GoodsService;
 import com.dadou.shop.shelves.pojos.Layer;
 import com.dadou.shop.shelves.pojos.Shelves;
 import com.dadou.shop.shelves.service.LayerService;
@@ -42,6 +44,9 @@ public class ShelvesController extends BaseController {
 	/**货架处理类**/
 	@Resource(name="layerService")
 	private LayerService layerService;
+    /**商品处理类**/
+    @Resource(name="goodsService")
+    private GoodsService goodsService;
 
 	/**基础数据处理类**/
 	@Resource(name="im_dictionaryService")
@@ -256,4 +261,48 @@ public class ShelvesController extends BaseController {
 		}
 		return getJsonStr();
 	}
+
+    /*******
+     * 上货
+     */
+    /**
+     * 添加货架
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value="/goAddGoods")
+    public String goAddGoods(Map<String,Object> map) {
+
+        String layerId = ActionContextUtils.getParameter("layerId");
+        map.put("id_layer", layerId);
+        map.put("layerIndex", ActionContextUtils.getParameter("layerIndex"));
+        //根据货架信息获取未被选中的商品
+        List<Goods> unChoseList = goodsService.getUnChoseList(layerId);
+        List<Goods>  chosenList = goodsService.getChosenList(layerId);
+        map.put("unChoseList", unChoseList);
+        map.put("chosenList", chosenList);
+        //添加货架
+        return PREFIX+"/addGoods";
+    }
+
+    /**
+     * 分配角色
+     */
+    @RequestMapping(value="/doAddGoods")
+    @ResponseBody
+    public String doAddGoods(Map<String,Object> map) {
+        try {
+            String id_layer = ActionContextUtils.getParameter("id_layer");
+            String goodsIds = ActionContextUtils.getParameter("goodsIds");
+            putRootJson(ResultMsg.MSG, "商品上架成功!");
+            this.layerService.doAddGoods(id_layer, goodsIds);
+        } catch (Exception e) {
+            String error = ExceptionUtils.formatStackTrace(e);
+            // 记录异常信息
+            logger.error(error);
+            putRootJson(ResultMsg.MSG, "商品上架失败!");
+        }
+        return getJsonStr();
+    }
+
+
 }

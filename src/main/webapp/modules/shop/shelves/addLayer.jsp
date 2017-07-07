@@ -3,7 +3,7 @@
 <div>
     <form id="layerSaveForm" method="post">
         <table class="table-search" align="center" width="100%">
-                  <input  type="text"  id="id_shelves" name="id_shelves" value="${id_shelves}" />
+                  <input  type="hidden" id="id_shelves" name="id_shelves" value="${id_shelves}"/>
             <tr>
                 <th>货架序号：</th>
                 <td>
@@ -11,6 +11,8 @@
                            data-options="validType:'length[1,3]',required:true,missingMessage:'货架序号不能为空'"   style="width: 60%"/>
                     &nbsp;<span style="color:#FF0000;">*</span>
                 </td>
+            </tr>
+            <tr>
                 <th>货架别名：</th>
                 <td><input class="easyui-validatebox" type="text" id="layerName" name="layerName"
                            data-options="required:true,missingMessage:'货架别名不能为空'" style="width: 80%"/>

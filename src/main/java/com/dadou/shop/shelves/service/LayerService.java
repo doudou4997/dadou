@@ -2,6 +2,8 @@ package com.dadou.shop.shelves.service;
 
 import com.dadou.shop.shelves.dao.LayerDao;
 import com.dadou.shop.shelves.pojos.Layer;
+import com.dadou.sys.CmsConst;
+import com.framework.core.utils.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -41,6 +43,27 @@ public class LayerService {
      */
     public void del(Map<String, Object> params){
         layerDao.remove(params);
+    }
+
+    /**
+     *商品上架
+     */
+    public void doAddGoods(String id_layer,String goodsId){
+        String[] goodsIds = null;
+        // 把字符串转换成数组
+        if (StringUtils.isNotEmpty(goodsId)) {
+            String[] ids = goodsId.split(CmsConst.SPLITCHAR);
+            goodsIds = new String[ids.length];
+            for (int i = 0; i < ids.length; i++) {
+                goodsIds[i] = (ids[i]);
+            }
+        }
+        // 删除之前已经上架的信息
+        layerDao.removeGoodsOfLayer(id_layer);
+        // 重新分配角色
+        if (goodsIds != null && goodsIds.length > 0) {
+            layerDao.doAddGoods(id_layer, goodsIds);
+        }
     }
 
 }

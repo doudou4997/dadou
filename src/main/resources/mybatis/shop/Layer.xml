@@ -38,4 +38,22 @@
         dtL.updatetime=#{updatetime},dtL.updateemp=#{updateemp},dtL.deleteflag=#{deleteflag}
         where dtL.ID=#{id}
     </delete>
+
+
+
+    <!-- 批量上架-货架和商品 -->
+    <delete id="removeGoodsOfLayer" >
+        delete from DT_LAYER_GOODS  where id_layer = #{id_layer}
+    </delete>
+    <insert id="batchSaveLayerGoods" useGeneratedKeys="false" parameterType="java.util.List">
+        insert into  DT_LAYER_GOODS(id_layer,id_goods)
+        select * from (
+        <foreach collection="layerGoods" item="item" index="index" separator="UNION ALL">
+            select
+            #{item.id_layer} as InsertId_layer,
+            #{item.id_goods} as insertId_goods
+            from dual
+        </foreach>
+        ) layer_goods_temp
+    </insert>
 </mapper>
