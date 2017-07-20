@@ -7,6 +7,15 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath:spring/applicationContext.xml</param-value>
     </context-param>
+    <!-- 微信公众接口 -->
+    <servlet>
+        <servlet-name>checkInfo</servlet-name>
+        <servlet-class>com.dadou.weixin.checkInfo.CheckInfoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>checkInfo</servlet-name>
+        <url-pattern>/checkInfo</url-pattern>
+    </servlet-mapping>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
