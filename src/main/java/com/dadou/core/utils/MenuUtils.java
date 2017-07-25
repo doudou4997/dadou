@@ -1,6 +1,6 @@
 package com.dadou.core.utils;
 
-import com.dadou.core.config.ConfigHelper;
+import com.dadou.core.config.ConfigConst;
 import com.framework.core.utils.JsonUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -62,8 +62,8 @@ public final class MenuUtils {
 	 */
 	private static String getAccessToken() {
 
-		String APPID = ConfigHelper.getValue("appId");
-		String APPSECRET = ConfigHelper.getValue("secret");
+		String APPID = ConfigConst.appId;
+		String APPSECRET = ConfigConst.secret;
 		String URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
 				+ APPID + "&secret=" + APPSECRET;
 		String accessToken = "";

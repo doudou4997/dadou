@@ -1,9 +1,9 @@
 package com.dadou.core.utils;
 
-import com.dadou.weixin.scan.message.Article;
-import com.dadou.weixin.scan.message.NewsMessage;
-import com.dadou.weixin.scan.message.TextMessage;
-import com.dadou.weixin.scan.message.TransferMessage;
+import com.dadou.weixin.message.Article;
+import com.dadou.weixin.message.NewsMessage;
+import com.dadou.weixin.message.TextMessage;
+import com.dadou.weixin.message.TransferMessage;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;

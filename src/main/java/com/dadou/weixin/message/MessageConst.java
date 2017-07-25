@@ -1,4 +1,4 @@
-package com.dadou.weixin.scan.message;
+package com.dadou.weixin.message;
 public final class MessageConst {
 	/////////////////////////
 	///所有常量

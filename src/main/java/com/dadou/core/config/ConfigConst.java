@@ -6,6 +6,14 @@ package com.dadou.core.config;
  */
 public final class ConfigConst {
 
+    //微信配置信息
+    public static String appId="wx2eb9286ead04a42b";
+    public static String secret="87e534ef133104bbbe87eab07d784742";
+    public static String token="xiaomabenteng2017";
+
+
+    public static String  dept_tree_id = "100";
+
     ////////////////////////////
     ///上传文件大小
     /////////////////////////
@@ -20,4 +28,6 @@ public final class ConfigConst {
 	public static final String ST_UPLOAD_PATH = "/upload";
 	//许可证文件
 	public static final String ST_LICENSE_PATH = "/license";
+
+    public static Integer DEFAULT_PAGE;
 }

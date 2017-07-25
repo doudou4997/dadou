@@ -1,4 +1,4 @@
-package com.dadou.weixin.scan.message;
+package com.dadou.weixin.message;
 
 /**
  * 图片消息

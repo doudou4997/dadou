@@ -1,6 +1,6 @@
 package com.dadou.sys.dept.controller;
 
-import com.dadou.core.config.ConfigHelper;
+import com.dadou.core.config.ConfigConst;
 import com.dadou.sys.CmsConst;
 import com.dadou.sys.dept.pojos.Department;
 import com.dadou.sys.dept.service.DepartmentService;
@@ -118,7 +118,7 @@ public class DepartmentController extends BaseController {
 	public String showTree() {
 		// 获取MenuItem列表
 		List<MenuItem> menuItemList = departmentService
-				.findDepartmentsAndUsers(ConfigHelper.getValue("dept_tree_id"));
+				.findDepartmentsAndUsers(ConfigConst.dept_tree_id);
 
 		TreeNode root = TreeUtils.createTree(menuItemList,"-1");
 		String json = "["+ JsonUtils.toJson(root) + "]";

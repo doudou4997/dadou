@@ -1,4 +1,4 @@
-package com.dadou.weixin.scan.message;
+package com.dadou.weixin.message;
 
 /**
  * 消息基类（普通用户 -> 公众帐号）

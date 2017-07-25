@@ -23,6 +23,14 @@
     </properties>
     <build>
         <finalName>com.dadou</finalName>
+        <!--
+       <resources>
+           <resource>
+               <directory>src/main/java/com/dadou/core/config</directory>
+               <filtering>false</filtering>
+           </resource>
+       </resources>
+       -->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

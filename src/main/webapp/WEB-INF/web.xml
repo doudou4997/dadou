@@ -9,12 +9,12 @@
     </context-param>
     <!-- 微信公众接口 -->
     <servlet>
-        <servlet-name>checkInfo</servlet-name>
+        <servlet-name>checkInfoServlet</servlet-name>
         <servlet-class>com.dadou.weixin.checkInfo.CheckInfoServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>checkInfo</servlet-name>
-        <url-pattern>/checkInfo</url-pattern>
+        <servlet-name>checkInfoServlet</servlet-name>
+        <url-pattern>/checkInfoServlet</url-pattern><!--对应的，浏览器中url-->
     </servlet-mapping>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
