@@ -1,14 +1,21 @@
 package com.dadou.weixin;
 
 
+import com.dadou.core.utils.MessageUtil;
 import com.dadou.core.utils.SignUtil;
+import com.dadou.core.utils.SpringContextHolder;
+import com.dadou.weixin.service.WeixinService;
+import com.framework.core.utils.ExceptionUtils;
 import com.framework.core.web.controller.BaseController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.Map;
 
 /**
  * 
@@ -63,15 +70,47 @@ public class WeixinController extends BaseController {
 			}else{/* 消息处理  */
 				logger.info("进入消息处理");
 				response.reset();
-				//sendMsg(request,response);
+				sendMsg(request,response);
 			}
 		} catch(Exception e){
 			logger.error(e.toString(), e);
 		}
 	}
 
-	//================================================获取access_token==============================================================
+
+	/**
+	 * 处理微信服务器发过来的各种消息，包括：文本、图片、地理位置、音乐等等
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	public void sendMsg(HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		InputStream inputStream = null;
+		WeixinService weixinService  = null;
+		//获取WeixinService
+		try {
+			weixinService = (WeixinService) SpringContextHolder.getBean("weixinService");
+			inputStream = request.getInputStream();
+			Map<String, String> params =  MessageUtil.parseXml(inputStream);
+			//处理返回结果
+			String processResult  = weixinService.doProcessRequest(params);
+			// TODO
+			PrintWriter out = response.getWriter();
+			out.print(processResult);
+			out.flush();
+			out.close();
+		} catch (Exception ex) {
+			//ErrorLogService errorLogService = (ErrorLogService) SpringContextHolder.getBean("errorLogService");
+			String event = ExceptionUtils.formatStackTrace(ex);
+			logger.error(event);
+			//保存错误日志
+			//errorLogService.saveLog(event);
+		} finally {
+			//TODO
+			if(inputStream!=null){
+				inputStream.close();
+			}
+		}
+	}
 }
-
-
-//================================================获取access_token==============================================================
