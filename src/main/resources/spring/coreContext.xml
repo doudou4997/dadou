@@ -90,6 +90,8 @@
 		<aop:pointcut id="allMethods" expression="execution(* com.dadou..*Service.*(..))"/>
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="allMethods"/>
 	</aop:config>
+	<!-- SpringContextHolder -->
+	<bean id="SpringContextHolder" class="com.dadou.core.utils.SpringContextHolder"/>
 	<!-- 国际化配置，注意：messageSource名称不能更改-->
 	<bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
